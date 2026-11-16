@@ -24,6 +24,19 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 
 已保存的 AI 中文翻译仍会保留，但内置简体中文词条优先显示。无需删除旧缓存。
 
+## 中文版出液量修复
+
+`fix/simplified-chinese-yield-step` 分支包含完整简体中文和出液量步进修复，版本为 `1.230.0-zh.1`。例如：74.6g 点“+”到 75.0g，75.1g 点“−”到 75.0g。已对齐时仍每次调整 0.5g，直接输入仍支持一位小数。
+
+在 Decaid 主页的皮肤安装菜单选择 **Install from GitHub Branch**：
+
+- Repository：`ethan-yangcheng/liquid-aqua-skin`
+- Branch：`fix/simplified-chinese-yield-step`
+
+安装后重新打开 Liquid Aqua。皮肤 ID 沿用 `liquid-aqua`，会更新现有 Liquid Aqua，而不会额外创建另一个皮肤。此后“检查更新”会跟踪这个安装来源。原汉化分支 `feat/simplified-chinese` 不包含本修复；从该分支或 ZIP 安装的用户需先按上面的步骤切换来源。
+
+离线回归检查：`node tools/test/yield-step.cjs`。本修复通过代码回归检查，尚待 Android 实机确认。
+
 ## 开发分支预览
 
 本分支的修改尚不代表上游 GitHub Release 已包含中文。安装上游正式版本时，请先确认其发布说明是否包含本次改动。

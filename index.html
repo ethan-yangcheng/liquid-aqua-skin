@@ -9609,7 +9609,15 @@ function setDoseIn(v){
     parseFloat((settings.doseIn*r).toFixed(1)))); } }
 function adjust(key,delta){
   if(key==='doseIn'){ setDoseIn(settings.doseIn+delta); syncRecipe(); pushRecipe(); return; }
-  settings[key]=parseFloat((settings[key]+delta).toFixed(1)); var c={doseIn:[5,30],doseOut:[10,80]}[key]; if(c) settings[key]=Math.max(c[0],Math.min(c[1],settings[key])); syncRecipe(); pushRecipe(); }
+  // Dose/ratio calculations and keypad entry can leave yield off the 0.5 g
+  // grid. Move to the next mark in the pressed direction, not by an offset
+  // that would keep 74.6 -> 75.1 -> 75.6 forever. Leave typed values untouched.
+  var next=settings[key]+delta;
+  if(key==='doseOut'&&delta!==0){
+    var step=Math.abs(delta), mark=settings[key]/step;
+    // Ignore floating-point noise at an existing mark before advancing it.
+    next=(delta>0?Math.floor(mark+1e-9)+1:Math.ceil(mark-1e-9)-1)*step; }
+  settings[key]=parseFloat(next.toFixed(1)); var c={doseIn:[5,30],doseOut:[10,80]}[key]; if(c) settings[key]=Math.max(c[0],Math.min(c[1],settings[key])); syncRecipe(); pushRecipe(); }
 // Adjust the ratio directly -> recompute yield from current dose.
 // Stepping the ratio lands on a ratio worth stepping to: a yield set by hand
 // leaves 2.01, and one press of + should give 2.1, not 2.11.
