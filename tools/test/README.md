@@ -1,5 +1,14 @@
 # Liquid Aqua browser tests
 
+Chinese fork checks without a gateway:
+
+```bash
+node tools/test/i18n.cjs
+node tools/test/yield-step.cjs
+```
+
+The `yield` browser suite checks that the yield buttons also update the outgoing profile target while leaving the saved library profile unchanged.
+
 ```bash
 python tools/test/run.py                 # every suite
 python tools/test/run.py card grinder    # named suites

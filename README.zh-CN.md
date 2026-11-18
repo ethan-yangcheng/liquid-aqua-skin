@@ -1,6 +1,26 @@
-# Liquid Aqua 简体中文支持
+# Liquid Aqua 简体中文维护版
 
 Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮肤。完整功能与安装说明见 [英文说明](README.md)。
+
+## 安装与更新
+
+本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.243.0（49f8250）**，中文版本为 **1.243.0-zh.1**，包含 1,504 个内置中文词条与出液量步进修复。
+
+在 Decaid 主页的皮肤管理中选择 **Install from GitHub Branch**：
+
+- Repository：`ethan-yangcheng/liquid-aqua-skin`
+- Branch：`feat/simplified-chinese`
+
+已从此分支安装的用户，在 Decaid 主页 → Web Interface → 右上角菜单 → **Check for updates** 更新，然后重新加载皮肤。若先前安装的是 `fix/simplified-chinese-yield-step` 或 ZIP，请按上方信息重新安装一次，以切换更新来源。不要改为上游仓库或 `main` 分支。
+
+沿用 `liquid-aqua` 皮肤 ID，更新现有 Liquid Aqua，不额外创建一份皮肤。之后的中文更新与修复统一维护在 `feat/simplified-chinese` 分支；更新需要先由维护者同步并测试，不会自动跟随上游。
+
+## 本次更新
+
+- 同步上游的热水按秤重停止、固件更新提示、输入控件、运行性能和 8 英寸平板显示优化。
+- 同步曲线独立停止提前量、插件页面与自动流量校准显示，以及目标液重写入运行曲线的逻辑。
+- 补齐 52 个新增中文词条，更新 6 处说明，删除 26 个上游弃用词条。
+- 出液量按钮按方向移动到下一个 0.5g 刻度：74.6g 点“+”到 75.0g，75.1g 点“−”到 75.0g；直接输入仍可保留一位小数。
 
 ## 切换中文
 
@@ -26,7 +46,7 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 
 ## 开发分支预览
 
-本分支的修改尚不代表上游 GitHub Release 已包含中文。安装上游正式版本时，请先确认其发布说明是否包含本次改动。
+这是独立维护的中文分支；上游 Release 不用于更新本分支。
 
 在仓库目录启动本地预览：
 
@@ -40,6 +60,7 @@ python3 -m http.server 8081
 
 ```bash
 node tools/test/i18n.cjs
+node tools/test/yield-step.cjs
 ```
 
 检查覆盖词条完整性、评分数组、变量占位符、换行、语言自动识别、手动语言优先级、旧 AI 翻译兼容、回退语言及 JavaScript 语法。真实 Android 平板与 DE1 的操作仍需实机验证。
