@@ -2,6 +2,10 @@
 
 Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮肤。完整功能与安装说明见 [英文说明](README.md)。
 
+## 长期维护记录
+
+汉化、出液量步进、休眠唤醒、Bookoo Mini 自动重连及更新来源的保留要求，统一记录在 [定制与上游同步清单](CUSTOMIZATIONS.zh-CN.md)。每次同步原作者新版时按该清单验收；仓库 [AGENTS.md](AGENTS.md) 也要求后续代码维护先读取该记录。
+
 ## 安装与更新
 
 本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.243.0（49f8250）**，中文版本为 **1.243.0-zh.2**，包含 1,508 个内置中文词条与出液量步进修复。
@@ -70,6 +74,7 @@ python3 -m http.server 8081
 ```bash
 node tools/test/i18n.cjs
 node tools/test/yield-step.cjs
+node tools/test/sleep-scale.cjs
 ```
 
 检查覆盖词条完整性、评分数组、变量占位符、换行、语言自动识别、手动语言优先级、旧 AI 翻译兼容、回退语言及 JavaScript 语法。真实 Android 平板与 DE1 的操作仍需实机验证。
