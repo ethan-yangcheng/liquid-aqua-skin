@@ -2492,7 +2492,18 @@ body.night .ep-grid .gname{color:var(--ink)}
 .preset-chip .pc-put{display:none}
 .preset-chip.edited .pc-put{display:inline}
 .ps-modal{max-width:420px}
-.cn-modal{width:860px;max-width:96vw}
+.cn-modal{width:min(1180px,calc(100vw - 48px));max-width:none;max-height:calc(100vh - 48px);display:flex;flex-direction:column;overflow:hidden}
+.cn-modal .modal-head{padding:12px 18px 10px;gap:12px;flex:none}
+.cn-modal .modal-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 18px 14px}
+.cn-head-t{min-width:0}
+.hw-log-acts{display:flex;gap:8px;flex:none}
+.hw-log{margin:-4px 0 10px;border-bottom:1px solid var(--edge)}
+.hw-log-row{padding:7px 0;border-top:1px solid var(--edge)}
+.hw-log-row:first-child{border-top:0}
+.hw-log-h{font-size:12px;font-weight:600;color:var(--ink)}
+.hw-log-d{font-size:11px;font-weight:600;color:var(--ink-mute);margin-top:2px}
+.cn-head-d{font-size:11px;font-weight:600;color:var(--ink-mute);margin-top:2px}
+.cn-head-a{display:flex;align-items:center;gap:8px;flex:none}
 .ep-imp{display:flex;align-items:center;gap:14px;width:100%;margin-top:10px;
   padding:14px 16px;border-radius:14px;border:1px solid var(--ctl-edge);
   background-color:var(--ctl-face);background-image:var(--ctl-sheen);
@@ -2503,36 +2514,36 @@ body.night .ep-grid .gname{color:var(--ink)}
 .ep-imp-t{display:flex;flex-direction:column;gap:2px;min-width:0}
 .ep-imp-t .n{font-size:14px;font-weight:800;color:var(--ink)}
 .ep-imp-t .s{font-size:11px;font-weight:600;color:var(--ink-mute)}
-.cn-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin-top:10px}
-.cn-cell{min-width:0;border:1px solid var(--edge);border-radius:14px;padding:11px 12px 10px}
+.cn-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:start}
+.cn-cell{min-width:0;border:1px solid var(--edge);border-radius:14px;padding:9px 11px}
 .cn-cell.wide{grid-column:1/-1}
-.cn-modal.more{width:960px}
+.cn-cell[data-cell="thermo"]{grid-column:auto}
+.cn-cell[data-cell="thermo"]+.cn-cell[data-cell="doser"]{grid-column:2/-1}
+@media (max-width:900px){.cn-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cn-cell[data-cell="thermo"]+.cn-cell[data-cell="doser"]{grid-column:1/-1}}
 .cn-sec-x{margin-left:auto;display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0}
 .cn-sec-x .dz-max{padding:0}
-.cn-held{max-height:190px;overflow-y:auto}
-.cn-cell[data-cell="doser"] .cn-held{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
-@media (max-width:820px){.cn-cell[data-cell="doser"] .cn-held{grid-template-columns:1fr}}
+.cn-cell[data-cell="doser"] .cn-held{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));column-gap:18px}
 .milk-now.hit{color:var(--green)}
 .live-milk{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.02em;white-space:nowrap}
 .live-milk:empty{display:none}
 .live-milk.hit{color:var(--green)}
 .cn-sec-h{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-mute)}
 .cn-sec-g{font-size:14px;line-height:1}
-.cn-now-h{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-mute);opacity:.6;margin:8px 0 2px}
-.cn-line{display:flex;align-items:center;gap:8px;padding:5px 0;min-width:0}
+.cn-line{display:flex;align-items:center;gap:8px;padding:4px 0;min-width:0}
 .cn-line-t{flex:1;min-width:0}
 .cn-name{font-size:13px;font-weight:800;color:var(--ink);overflow:hidden;overflow-wrap:anywhere;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .cn-line.up .cn-name{color:var(--green)}
 .cn-sub{font-size:10px;font-weight:600;color:var(--ink-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cn-acts{display:flex;gap:6px;flex:none}
 .cn-rec{font-size:11px;font-weight:700;color:var(--ink-soft);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cn-btn{min-height:30px;padding:5px 10px;font-size:11px;border-radius:9px}
+.m-btn.cn-btn{min-height:36px;padding:0 12px;font-size:12px;border-radius:9px}
 .cn-none{font-size:11px;font-weight:600;color:var(--ink-mute);opacity:.65;padding:6px 0}
 /* Only what can grow scrolls; the held device stays put above the rule. */
-.cn-list{max-height:124px;overflow-y:auto;border-top:1px solid var(--edge);margin-top:8px;padding-top:2px}
-.cn-owned{font-size:11px;font-weight:600;color:var(--ink-mute);opacity:.7;margin-top:14px}
-.cn-modal .modal-actions{position:sticky;bottom:0;z-index:2;margin-top:0;padding:12px 0 4px;background:linear-gradient(180deg,rgba(251,250,255,0),#fbfaff 34%)}
-body.night .cn-modal .modal-actions{background:linear-gradient(180deg,rgba(26,23,48,0),#1a1730 34%)}
+.cn-list{border-top:1px solid var(--edge);margin-top:6px;padding-top:2px}
+.cn-sec-h>.cn-none{margin-left:auto;padding:0;text-transform:none;letter-spacing:0}
+.cn-cell>.cn-held:first-of-type{margin-top:4px}
+.cn-owned{font-size:11px;font-weight:600;color:var(--ink-mute);opacity:.7;margin-top:10px}
 .preset-chip .pc-save{font-size:12px;color:var(--ink-mute);border:none;background:none;cursor:pointer;padding:0 2px}
 .preset-chip .pc-save:hover{color:var(--accent)}
 .opt-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(139,92,246,.1)}
@@ -3361,14 +3372,10 @@ body.night .toast{background:#1a1730;border-color:rgba(255,255,255,.1)}
 
 <!-- What is connected, and what else could be -->
 <div class="overlay" id="connOverlay" onclick="closeModal(event,'connOverlay')">
-  <div class="modal cn-modal"><div class="modal-head"><div class="modal-title" data-i18n="connTitle"></div><button class="modal-close" onclick="closeModal(null,'connOverlay')">×</button></div>
+  <div class="modal cn-modal"><div class="modal-head"><div class="cn-head-t"><div class="modal-title" data-i18n="connTitle"></div><div class="cn-head-d" data-i18n="connDesc"></div></div>
+    <div class="cn-head-a"><button class="m-btn cn-btn cn-find" id="connScanBtn" onclick="connScan()">Find</button><button class="modal-close" onclick="closeModal(null,'connOverlay')">×</button></div></div>
   <div class="modal-body">
-    <div class="set-desc" data-i18n="connDesc"></div>
     <div id="connList"></div>
-    <div class="modal-actions">
-      <button class="m-btn" id="connScanBtn" onclick="connScan()">Find</button>
-      <button class="m-btn" onclick="closeModal(null,'connOverlay')"><span data-i18n="close"></span></button>
-    </div>
   </div></div>
 </div>
 
@@ -3785,7 +3792,7 @@ var I18N={
     grSrcWatchHint:'This grinder only reports — the number is kept here; hold for the grinder list',
     grReads:'The grinder reads {v}',
     grAutoReg:'Added the “{n}” grinder from its plugin',
-    grLinked:'Linked', grInUse:'In use', undo:'Undo', usOffer:'Last shot\u2019s settings', bagFreeze:'Freeze', bagThaw:'Thaw', bagFrozen:'Marked frozen', bagThawed:'Marked thawed', rest_frozen:'Frozen', grindAt:'grind {s}', favLabel:'Favourite', bgfAll:'All', bgfReady:'Ready', bgfFrozen:'Frozen', bgfOut:'Used up \u00b7 put away', bgSortLbl:'Order', bgsSmart:'Suggested', bgsRoast:'Roast date', bgsName:'Name', bgSelect:'Select', bgSelDone:'Done', bgSelN:'{n} selected', bgArchive:'Put away', bgUnarchive:'Bring back', bgDelete:'Delete', bgArchived:'{n} put away', bgRestored:'{n} brought back', confirmDeleteBeans:'Delete {n} beans?', bgMultiHint:'Tap beans to pick them, then choose what to do', beanPicked:'Using {n}', grinderPicked:'Using {n}', bgCardHint:'Tap to use \u00b7 hold or the pencil to edit', rest_resting:'Resting', rest_ready:'Ready', rest_fading:'Fading', rest_past:'Past peak', bagLeftShort:'about {l}g left', bagsN:'{n} bags', bagUsedUp:'Used up', bagRestore:'Back in use', bagMarkedOut:'Marked used up', bagBackIn:'Back in use', saveBeanFirst:'Save the bean first', saveGrinderFirst:'Save the grinder first', confirmDeleteGrinder:'Delete this grinder?', noBeans:'No beans yet', noGrinders:'No grinders yet', grLinkTitle:'Plugin grinder',
+    grLinked:'Linked', grInUse:'In use', undo:'Undo', usOffer:'Last shot\u2019s settings', grindOffer:'Last grind {s}', bagFreeze:'Freeze', bagThaw:'Thaw', bagFrozen:'Marked frozen', bagThawed:'Marked thawed', rest_frozen:'Frozen', favLabel:'Favourite', bgfAll:'All', bgfReady:'Ready', bgfFrozen:'Frozen', bgfOut:'Used up \u00b7 put away', bgSortLbl:'Order', bgsSmart:'Suggested', bgsRoast:'Roast date', bgsName:'Name', bgSelect:'Select', bgSelDone:'Done', bgSelN:'{n} selected', bgArchive:'Put away', bgUnarchive:'Bring back', bgDelete:'Delete', bgArchived:'{n} put away', bgRestored:'{n} brought back', confirmDeleteBeans:'Delete {n} beans?', bgMultiHint:'Tap beans to pick them, then choose what to do', beanPicked:'Using {n}', grinderPicked:'Using {n}', bgCardHint:'Tap to use \u00b7 hold or the pencil to edit', rest_resting:'Resting', rest_ready:'Ready', rest_fading:'Fading', rest_past:'Past peak', bagLeftShort:'about {l}g left', bagsN:'{n} bags', bagUsedUp:'Used up', bagRestore:'Back in use', bagMarkedOut:'Marked used up', bagBackIn:'Back in use', saveBeanFirst:'Save the bean first', saveGrinderFirst:'Save the grinder first', confirmDeleteGrinder:'Delete this grinder?', noBeans:'No beans yet', noGrinders:'No grinders yet', grLinkTitle:'Plugin grinder',
     grLinkWhat:'Name and dial follow the plugin; the recipe card sets it while in use. Burrs and notes are yours.',
     grLinkAway:'Not connected now', grLinkGone:'The {p} plugin that kept this grinder is not installed now, so the record can be edited by hand.',
     grSrcManualHint:'Recorded here only — hold for the grinder list',
@@ -3882,7 +3889,7 @@ var I18N={
     refillStoppedLbl:'Refill stopped', refillStoppedToast:'The refill kit could not fill the tank \u2014 check the water supply',
     needsWater:'Out of water', needsWaterToast:'Out of water \u2014 the machine has stopped until the tank is refilled',
     sawAuto:'Adjust the shot stop after each shot', sawLearned:'Shot stop moved {a}s \u2192 {b}s ({y}g for {w}g)',
-    flowCal:'Stop timing', flowCalDesc:'How many seconds before the target the shot or hot water is stopped. The scale reports a little late and drops keep falling after the pump stops, so stopping a moment early lands on the target. Raise it if you keep going over, lower it if you keep falling short. It does not change how the machine measures flow.', fcWeight:'Espresso (scale)', fcVolume:'Espresso without a scale (volume)', fcHotWater:'Hot water (scale)', stopHwW:'Stop hot water on the scale', stopHwWDesc:'The gateway stops hot water when the cup on the scale reaches the set amount. Off, the machine stops on its own estimate of the water it gave.', stopHwWNoScale:'Needs a connected scale. Without one the machine stops on its own estimate.', hwAppStop:'Stop on the scale in this skin', hwAppStopDesc:'On by default. Some machines stop hot water short of the set amount on their own count. With a scale, the machine is asked for half again and this skin stops the pour when the cup reaches the amount, as de1app does. A pour started at the group head while this screen is not running can give up to half again.', hwTab:'Hot water', hwFlow:'Flow', hwFlowDesc:'How fast the machine pours hot water. Slower takes longer; faster splashes more and overshoots a little more after the stop.', fcDefault:'Default {v}s', fcReset:'Default', fcSec:'s', mcalTitle:'Machine flow calibration', mcalDesc:'The DE1 has no flow meter: it estimates flow from what its pump is doing. This value multiplies that estimate. Set it when hot water, or a shot without a scale, gives less (or more) than was set. It is written to the machine and the gateway keeps it for this machine.', mcalNow:'Current value', mcalSave:'Save to the machine', mcalConfirm:'Change the machine flow calibration from {a} to {b}?', mcalSaved:'Machine flow calibration saved', mcalNew:'New value', flowStopTab:'Flow & stop', careTab:'Care & info', mcalRange:'The machine takes 0.13 to 2.0',
+    flowCal:'Stop timing', flowCalDesc:'How many seconds before the target the shot or hot water is stopped. The scale reports a little late and drops keep falling after the pump stops, so stopping a moment early lands on the target. Raise it if you keep going over, lower it if you keep falling short. It does not change how the machine measures flow.', fcWeight:'Espresso (scale)', fcVolume:'Espresso without a scale (volume)', fcHotWater:'Hot water (scale)', stopHwW:'Stop hot water on the scale', stopHwWDesc:'Hot water stops when the cup on the scale reaches the set amount. The machine is asked for 250 ml and this skin stops the pour, as de1app does, so a machine that counts its water short cannot stop it early. Off, the machine is given the amount and stops on its own estimate. A pour started at the group head while this screen is not running can give up to 250 ml.', hwNoVol:'Leave the machine\u2019s water count out', hwNoVolDesc:'Off by default. On, the machine is given no volume, only a time limit, so a machine that counts more water than it gives cannot stop the pour before the cup reaches the amount. This skin stops the pour on the scale; if the skin or the scale drops out, water keeps coming until the time limit. The limit is the time the amount would take at half the set flow, plus 5 s (now {s} s). It applies only with the scale stop on and a scale connected.', hwLog:'Hot water log', hwLogDesc:'The last pours: what reached the cup, what the machine counted, and what stopped it. Copy sends the full record, with its trace, to the clipboard.', hwLogCopy:'Copy', hwLogClear:'Clear', hwLogCopied:'Hot water log copied', hwLogCup:'cup {c} g (at the stop {s} g)', hwLogMachine:'machine counted {m} ml, limit {v} ml \u00b7 {t} s', hwLogHead:'{d} \u00b7 target {g} ml', hwLogJumps:' \u00b7 {n} sudden weight changes set aside', hwLogNoScale:'no scale', hwrSkin:'Stopped by this skin on the scale', hwrButton:'Stopped with the button in this skin', hwrVolume:'The machine stopped on its own count of the water', hwrTime:'The machine stopped on its time limit ({s} s)', hwrGateway:'The gateway stopped it on the scale', hwrTank:'The water tank ran low', hwrOther:'Stopped elsewhere: the group head, another app or the machine', stopHwWNoScale:'Needs a connected scale. Without one the machine stops on its own estimate.', hwTab:'Hot water', hwFlow:'Flow', hwFlowDesc:'How fast the machine pours hot water. Slower takes longer; faster splashes more and overshoots a little more after the stop.', fcDefault:'Default {v}s', fcReset:'Default', fcSec:'s', mcalTitle:'Machine flow calibration', mcalDesc:'The DE1 has no flow meter: it estimates flow from what its pump is doing. This value multiplies that estimate. Set it when hot water, or a shot without a scale, gives less (or more) than was set. It is written to the machine and the gateway keeps it for this machine.', mcalNow:'Current value', mcalSave:'Save to the machine', mcalConfirm:'Change the machine flow calibration from {a} to {b}?', mcalSaved:'Machine flow calibration saved', mcalNew:'New value', flowStopTab:'Flow & stop', careTab:'Care & info', mcalRange:'The machine takes 0.13 to 2.0',
     refillKit:'Refill kit', refillKitDesc:'A plumbed machine refills itself, so its tank shows full and the low-water warning stays off. The machine reports whether the kit is fitted; set it here only to overrule a wrong reading.', rkOn:'Force on', rkOff:'Force off', rkYes:'Yes', rkNo:'No', rkDetected:'Refill kit detected',
     machineInfo:'Machine Info', serial:'Serial', firmware:'Firmware', geminiDesc:'Used to auto-fill bean details from a photo of the bag. Stored on this device only.',
     installed:'Installed', available:'Available', updateFirmware:'Update firmware', fwUpToDate:'Firmware is up to date.', fwUnavailable:'Firmware info unavailable', fwConfirm:'Install firmware {v}? This takes several minutes, and the machine has to be switched off and on afterwards.', updating:'Updating…',
@@ -4016,7 +4023,6 @@ var I18N={
     mbSecBean:'The coffee', mbSecOrigin:'Where it came from', mbSecNotes:'Everything else on the bag',
     scanFound:'Not on the bag, found by search: {n} \u2014 worth checking',
     sf_processing:'process', sf_altitude:'altitude', sf_variety:'variety', sf_producer:'producer', sf_region:'region',
-    recipeFromLast:'Recipe brought back from this profile\u2019s last shot ({n})',
     lockedBrewing:'The profile cannot be changed while a shot is running.',
     brewingNow:'Brewing — this profile is locked',
     exitDash:'Decaid dashboard', exitDashDesc:'The app’s own settings and skin picker. This leaves the skin; it does not close Decaid.', exitDashBtn:'Go to dashboard', exitDashFailed:'Could not leave the skin',
@@ -4064,7 +4070,7 @@ var I18N={
     dosingScale:'Dosing scale', dosingScaleDesc:'A second scale to weigh the dose on. It is held open for this skin only, is never used to weigh a shot, and is let go when the app closes.',
     connTapHint:'What is connected — tap to change', dosingPicked:'Using \u201c{n}\u201d as the dosing scale', dosingNone:'None', dosingHeldShort:'connected', dosingAway:'Chosen scale (out of range)',
     dosingReading:'Dosing reading',
-    dosingTareHint:'The \u2696 beside the dose on the main screen zeroes it too, without coming in here.', dosingWaiting:'Waiting for the scale', dosingWaitBrew:'Waiting for the brewing scale first', dosingTare:'Zero',
+    dosingTareHint:'The \u2696 beside the dose on the main screen zeroes it too, without coming in here.', dosingWaiting:'Waiting for the scale', dosingWaitBrew:'Waiting for the machine and brewing scale first', dosingTare:'Zero',
     dosingHeld:'Dosing scale connected', dosingHoldFailed:'Could not hold the dosing scale',
     dosingUnsupported:'This gateway is too old for a second scale. Update Decaid.',
     favTag:'Favourites', noTag:'No tag', loadingCenter:'Loading this one…',
@@ -4263,7 +4269,7 @@ var I18N={
     grSrcWatchHint:'이 그라인더는 읽기만 됩니다 — 숫자는 여기에 기록됩니다, 길게 누르면 그라인더 목록',
     grReads:'그라인더 표시값 {v}',
     grAutoReg:'“{n}” 플러그인 그라인더를 목록에 추가했습니다',
-    grLinked:'연동', grInUse:'사용 중', undo:'되돌리기', usOffer:'지난 샷 설정', bagFreeze:'냉동', bagThaw:'해동', bagFrozen:'냉동으로 표시했습니다', bagThawed:'해동으로 표시했습니다', rest_frozen:'냉동', grindAt:'분쇄 {s}', favLabel:'즐겨찾기', bgfAll:'전체', bgfReady:'적기', bgfFrozen:'냉동', bgfOut:'다 씀 \u00b7 보관', bgSortLbl:'정렬', bgsSmart:'추천순', bgsRoast:'로스팅일', bgsName:'이름', bgSelect:'선택', bgSelDone:'완료', bgSelN:'{n}개 선택', bgArchive:'보관', bgUnarchive:'꺼내기', bgDelete:'삭제', bgArchived:'{n}개를 보관했습니다', bgRestored:'{n}개를 꺼냈습니다', confirmDeleteBeans:'원두 {n}개를 삭제할까요?', bgMultiHint:'원두를 탭해 고른 뒤 할 일을 누르세요', beanPicked:'사용: {n}', grinderPicked:'사용: {n}', bgCardHint:'탭하면 사용 \u00b7 길게 누르거나 연필을 누르면 편집', rest_resting:'숙성 중', rest_ready:'적기', rest_fading:'지나는 중', rest_past:'지남', bagLeftShort:'남은 약 {l}g', bagsN:'봉투 {n}', bagUsedUp:'다 씀', bagRestore:'다시 사용', bagMarkedOut:'다 쓴 봉투로 표시했습니다', bagBackIn:'다시 쓰는 봉투로 돌렸습니다', saveBeanFirst:'원두를 먼저 저장하세요', saveGrinderFirst:'그라인더를 먼저 저장하세요', confirmDeleteGrinder:'이 그라인더를 삭제할까요?', noBeans:'아직 원두가 없습니다', noGrinders:'아직 그라인더가 없습니다', grLinkTitle:'플러그인 그라인더',
+    grLinked:'연동', grInUse:'사용 중', undo:'되돌리기', usOffer:'지난 샷 설정', grindOffer:'지난 분쇄 {s}', bagFreeze:'냉동', bagThaw:'해동', bagFrozen:'냉동으로 표시했습니다', bagThawed:'해동으로 표시했습니다', rest_frozen:'냉동', favLabel:'즐겨찾기', bgfAll:'전체', bgfReady:'적기', bgfFrozen:'냉동', bgfOut:'다 씀 \u00b7 보관', bgSortLbl:'정렬', bgsSmart:'추천순', bgsRoast:'로스팅일', bgsName:'이름', bgSelect:'선택', bgSelDone:'완료', bgSelN:'{n}개 선택', bgArchive:'보관', bgUnarchive:'꺼내기', bgDelete:'삭제', bgArchived:'{n}개를 보관했습니다', bgRestored:'{n}개를 꺼냈습니다', confirmDeleteBeans:'원두 {n}개를 삭제할까요?', bgMultiHint:'원두를 탭해 고른 뒤 할 일을 누르세요', beanPicked:'사용: {n}', grinderPicked:'사용: {n}', bgCardHint:'탭하면 사용 \u00b7 길게 누르거나 연필을 누르면 편집', rest_resting:'숙성 중', rest_ready:'적기', rest_fading:'지나는 중', rest_past:'지남', bagLeftShort:'남은 약 {l}g', bagsN:'봉투 {n}', bagUsedUp:'다 씀', bagRestore:'다시 사용', bagMarkedOut:'다 쓴 봉투로 표시했습니다', bagBackIn:'다시 쓰는 봉투로 돌렸습니다', saveBeanFirst:'원두를 먼저 저장하세요', saveGrinderFirst:'그라인더를 먼저 저장하세요', confirmDeleteGrinder:'이 그라인더를 삭제할까요?', noBeans:'아직 원두가 없습니다', noGrinders:'아직 그라인더가 없습니다', grLinkTitle:'플러그인 그라인더',
     grLinkWhat:'이름과 눈금은 플러그인을 따르고, 사용 중에는 레시피 카드에서 설정합니다. 버와 메모는 직접 입력하세요.',
     grLinkAway:'지금 연결되지 않음', grLinkGone:'이 그라인더를 관리하던 {p} 플러그인이 지금 설치돼 있지 않아 직접 편집할 수 있습니다.',
     grSrcManualHint:'여기에만 기록됩니다 — 길게 누르면 그라인더 목록',
@@ -4365,7 +4371,7 @@ var I18N={
     refillStoppedLbl:'급수 멈춤', refillStoppedToast:'리필 키트가 탱크를 채우지 못했습니다 \u2014 급수를 확인하세요',
     needsWater:'물 부족', needsWaterToast:'물이 부족합니다 \u2014 물을 채울 때까지 머신이 멈춥니다',
     sawAuto:'샷마다 추출 정지 시간 자동 맞춤', sawLearned:'추출 정지 시간을 {a}초 \u2192 {b}초로 맞췄습니다 (목표 {w}g에 {y}g)',
-    flowCal:'정지 시간 보정', flowCalDesc:'목표에 닿기 몇 초 전에 멈출지 정합니다. 저울은 무게를 조금 늦게 알리고 펌프가 멈춘 뒤에도 방울이 떨어지므로, 이 시간만큼 미리 멈춰야 목표에 맞습니다. 목표를 자꾸 넘기면 올리고, 모자라면 내리세요. 머신의 유량 측정은 바꾸지 않습니다.', fcWeight:'에스프레소 (저울)', fcVolume:'에스프레소 (저울 없을 때 부피)', fcHotWater:'온수 (저울)', stopHwW:'온수 저울 정지', stopHwWDesc:'저울 위 컵이 설정한 양에 닿으면 게이트웨이가 온수를 멈춥니다. 끄면 머신이 자기 추정량으로 멈춥니다.', stopHwWNoScale:'저울이 연결돼 있어야 합니다. 없으면 머신이 자기 추정량으로 멈춥니다.', hwAppStop:'스킨이 저울로 멈추기', hwAppStopDesc:'기본으로 켜져 있습니다. 어떤 머신은 자기 추정량으로 설정보다 적게 멈춥니다. 저울이 있으면 머신에는 1.5배를 보내고, 컵이 설정한 양에 닿으면 이 스킨이 멈춥니다(de1app 방식). 이 화면이 꺼진 채 그룹헤드에서 시작하면 최대 1.5배까지 나올 수 있습니다.', hwTab:'온수', hwFlow:'유량', hwFlowDesc:'머신이 온수를 내리는 속도입니다. 느리면 오래 걸리고, 빠르면 튀거나 멈춘 뒤 조금 더 넘칩니다.', fcDefault:'기본 {v}초', fcReset:'기본값', fcSec:'초', mcalTitle:'머신 유량 보정', mcalDesc:'DE1에는 유량계가 없어 펌프 동작으로 유량을 추정합니다. 이 값은 그 추정에 곱하는 보정값입니다. 온수나 저울 없는 추출이 설정한 양보다 적게(또는 많이) 나올 때 맞춥니다. 머신에 저장되고 게이트웨이가 이 머신용으로 기억합니다.', mcalNow:'현재 값', mcalSave:'머신에 저장', mcalConfirm:'머신 유량 보정을 {a}에서 {b}로 바꿀까요?', mcalSaved:'머신 유량 보정을 저장했습니다', mcalNew:'새 값', flowStopTab:'유량·정지', careTab:'관리·정보', mcalRange:'0.13~2.0 사이로 넣으세요',
+    flowCal:'정지 시간 보정', flowCalDesc:'목표에 닿기 몇 초 전에 멈출지 정합니다. 저울은 무게를 조금 늦게 알리고 펌프가 멈춘 뒤에도 방울이 떨어지므로, 이 시간만큼 미리 멈춰야 목표에 맞습니다. 목표를 자꾸 넘기면 올리고, 모자라면 내리세요. 머신의 유량 측정은 바꾸지 않습니다.', fcWeight:'에스프레소 (저울)', fcVolume:'에스프레소 (저울 없을 때 부피)', fcHotWater:'온수 (저울)', stopHwW:'온수 저울 정지', stopHwWDesc:'저울 위 컵이 설정한 양에 닿으면 온수를 멈춥니다. 머신에는 250 ml를 보내고 이 스킨이 멈추므로(de1app 방식), 물량을 적게 세는 머신이라도 먼저 멈추지 않습니다. 끄면 설정한 양을 머신에 보내고 머신이 자기 추정량으로 멈춥니다. 이 화면이 꺼진 채 그룹헤드에서 시작하면 최대 250 ml까지 나올 수 있습니다.', hwNoVol:'머신 물량 계산 쓰지 않기', hwNoVolDesc:'기본은 꺼짐입니다. 켜면 머신에 물량 한도 없이 시간 상한만 보내, 물량을 실제보다 많게 세는 머신이 컵이 목표에 닿기 전에 멈추지 않게 합니다. 온수는 이 스킨이 저울로 멈추고, 스킨이나 저울 연결이 끊기면 시간 상한까지 계속 나옵니다. 시간 상한은 설정 유량의 절반 속도로 목표를 채우는 시간에 5초를 더한 값입니다(지금 {s}초). 온수 저울 정지가 켜져 있고 저울이 연결돼 있을 때만 쓰입니다.', hwLog:'온수 기록', hwLogDesc:'최근 온수마다 컵에 담긴 양, 머신이 센 물량, 무엇이 멈췄는지를 보여 줍니다. 복사를 누르면 흐름 기록까지 전체가 클립보드에 담깁니다.', hwLogCopy:'복사', hwLogClear:'지우기', hwLogCopied:'온수 기록을 복사했습니다', hwLogCup:'컵 {c} g (멈춘 순간 {s} g)', hwLogMachine:'머신 계산 {m} ml, 한도 {v} ml \u00b7 {t}초', hwLogHead:'{d} \u00b7 목표 {g} ml', hwLogJumps:' \u00b7 갑작스러운 무게 변화 {n}회 제외', hwLogNoScale:'저울 없음', hwrSkin:'스킨이 저울로 멈춤', hwrButton:'스킨의 버튼으로 멈춤', hwrVolume:'머신이 자기 물량 계산으로 멈춤', hwrTime:'머신 시간 제한({s}초)으로 멈춤', hwrGateway:'게이트웨이가 저울로 멈춤', hwrTank:'물탱크 부족으로 멈춤', hwrOther:'다른 곳에서 멈춤: 그룹헤드 버튼, 다른 앱 또는 머신', stopHwWNoScale:'저울이 연결돼 있어야 합니다. 없으면 머신이 자기 추정량으로 멈춥니다.', hwTab:'온수', hwFlow:'유량', hwFlowDesc:'머신이 온수를 내리는 속도입니다. 느리면 오래 걸리고, 빠르면 튀거나 멈춘 뒤 조금 더 넘칩니다.', fcDefault:'기본 {v}초', fcReset:'기본값', fcSec:'초', mcalTitle:'머신 유량 보정', mcalDesc:'DE1에는 유량계가 없어 펌프 동작으로 유량을 추정합니다. 이 값은 그 추정에 곱하는 보정값입니다. 온수나 저울 없는 추출이 설정한 양보다 적게(또는 많이) 나올 때 맞춥니다. 머신에 저장되고 게이트웨이가 이 머신용으로 기억합니다.', mcalNow:'현재 값', mcalSave:'머신에 저장', mcalConfirm:'머신 유량 보정을 {a}에서 {b}로 바꿀까요?', mcalSaved:'머신 유량 보정을 저장했습니다', mcalNew:'새 값', flowStopTab:'유량·정지', careTab:'관리·정보', mcalRange:'0.13~2.0 사이로 넣으세요',
     refillKit:'리필 키트', refillKitDesc:'배관 급수 머신은 스스로 물을 채우므로 탱크를 만수로 표시하고 저수위 경고를 띄우지 않습니다. 리필킷 장착 여부는 머신이 보고하며, 그 값이 틀렸을 때만 여기서 지정하세요.', rkOn:'강제 켜기', rkOff:'강제 끄기', rkYes:'있음', rkNo:'없음', rkDetected:'리필 킷 감지됨',
     machineInfo:'머신 정보', serial:'시리얼', firmware:'펌웨어', geminiDesc:'봉투 사진에서 원두 정보를 자동으로 채우는 데 사용. 이 기기에만 저장됩니다.',
     installed:'설치됨', available:'사용 가능', updateFirmware:'펌웨어 업데이트', fwUpToDate:'펌웨어가 최신입니다.', fwUnavailable:'펌웨어 정보 없음', fwConfirm:'펌웨어 {v}를 설치할까요? 몇 분 걸리며, 끝나면 머신 전원을 껐다 켜야 합니다.', updating:'업데이트 중…',
@@ -4499,7 +4505,6 @@ var I18N={
     mbSecBean:'원두', mbSecOrigin:'어디에서 왔는가', mbSecNotes:'봉투에 적힌 나머지',
     scanFound:'봉투에 없어 검색으로 찾은 항목: {n} \u2014 확인해 주세요',
     sf_processing:'가공법', sf_altitude:'고도', sf_variety:'품종', sf_producer:'생산자', sf_region:'지역',
-    recipeFromLast:'이 프로파일로 마지막에 내린 레시피를 가져왔습니다 ({n})',
     lockedBrewing:'추출 중에는 프로파일을 바꿀 수 없습니다.',
     brewingNow:'추출 중 — 프로파일 잠김',
     exitDash:'Decaid 대시보드', exitDashDesc:'앱 자체 설정과 스킨 선택 화면입니다. 스킨을 벗어날 뿐, Decaid를 종료하지는 않습니다.', exitDashBtn:'대시보드로', exitDashFailed:'스킨을 벗어나지 못했습니다',
@@ -4547,7 +4552,7 @@ var I18N={
     dosingScale:'도징 저울', dosingScaleDesc:'도징 무게를 재는 두 번째 저울입니다. 이 스킨을 위해서만 잡아 두며, 추출 계량에는 쓰이지 않고 앱을 닫으면 놓습니다.',
     connTapHint:'연결 상태 — 누르면 변경', dosingPicked:'“{n}” 을 도징 저울로 잡았습니다', dosingNone:'없음', dosingHeldShort:'연결됨', dosingAway:'선택한 저울 (범위 밖)',
     dosingReading:'도징 측정값',
-    dosingTareHint:'메인 화면 도스 옆의 ⚖ 를 눌러도 영점이 잡힙니다. 여기까지 들어오지 않아도 됩니다.', dosingWaiting:'저울을 기다리는 중', dosingWaitBrew:'추출 저울을 먼저 기다리는 중', dosingTare:'영점',
+    dosingTareHint:'메인 화면 도스 옆의 ⚖ 를 눌러도 영점이 잡힙니다. 여기까지 들어오지 않아도 됩니다.', dosingWaiting:'저울을 기다리는 중', dosingWaitBrew:'머신과 추출 저울 연결을 먼저 기다리는 중', dosingTare:'영점',
     dosingHeld:'도징 저울을 연결했습니다', dosingHoldFailed:'도징 저울을 잡지 못했습니다',
     dosingUnsupported:'이 게이트웨이는 두 번째 저울을 지원하지 않습니다. Decaid를 업데이트하세요.',
     favTag:'즐겨찾기', noTag:'태그 없음', loadingCenter:'이것을 불러오는 중…',
@@ -4708,6 +4713,26 @@ var I18N={
     tapWake:'화면을 눌러 깨우기'
   },
   zh:{
+    grindOffer:"上次研磨度 {s}",
+    hwNoVol:"忽略机器水量计数",
+    hwNoVolDesc:"默认关闭。开启后只向机器发送时间上限，不设置水量上限，避免机器高估水量而在杯中尚未达到目标时停水。皮肤根据秤重停止；若皮肤或秤断开，热水会持续到时间上限。上限为按设定流量的一半达到目标所需时间再加 5 秒（当前 {s} 秒）。仅在按秤停止开启且秤已连接时生效。",
+    hwLog:"热水记录",
+    hwLogDesc:"最近的出水记录：杯中实际水量、机器计数及停止原因。复制会将完整记录及曲线数据放入剪贴板。",
+    hwLogCopy:"复制",
+    hwLogClear:"清空",
+    hwLogCopied:"已复制热水记录",
+    hwLogCup:"杯中 {c} g（停止时 {s} g）",
+    hwLogMachine:"机器计数 {m} ml，上限 {v} ml · {t} 秒",
+    hwLogHead:"{d} · 目标 {g} ml",
+    hwLogJumps:" · 已忽略 {n} 次重量突变",
+    hwLogNoScale:"未连接电子秤",
+    hwrSkin:"皮肤按秤重停止",
+    hwrButton:"通过皮肤按钮停止",
+    hwrVolume:"机器达到自身水量计数上限后停止",
+    hwrTime:"机器达到时间上限后停止（{s} 秒）",
+    hwrGateway:"网关按秤重停止",
+    hwrTank:"水箱水量不足",
+    hwrOther:"由其他来源停止：冲煮头、其他应用或机器",
     sleepExit:"长按休眠后离开应用", sleepExitDesc:"按住 0.8 秒后休眠并离开 Decaid；返回时唤醒未在工作的咖啡机。关闭后留在皮肤中。", brewReconnect:"自动重连首选萃取秤", brewReconnectDesc:"机器唤醒且空闲时，约每 30 秒寻找一次断开的首选萃取秤。请先在设备列表中选定萃取秤。",
     tankLevelTitle:"水箱水位",
     groupTempTitle:"冲煮头温度",
@@ -4792,7 +4817,6 @@ var I18N={
     bagFrozen:"已标记为冷冻",
     bagThawed:"已标记为解冻",
     rest_frozen:"冷冻中",
-    grindAt:"研磨度 {s}",
     favLabel:"收藏",
     bgfAll:"全部",
     bgfReady:"适饮",
@@ -5061,10 +5085,8 @@ var I18N={
     fcVolume:"无电子秤萃取（体积）",
     fcHotWater:"热水（电子秤）",
     stopHwW:"热水按秤重停止",
-    stopHwWDesc:"杯中水量达到设定重量时，由网关停止热水。关闭后，咖啡机按自身估算的出水量停止。",
+    stopHwWDesc:"秤上杯中的水达到设定量时停止。与 de1app 一样，向机器发送 250 ml 上限，由皮肤按秤重停止，避免机器水量计数不准而提前停水。关闭后，机器按设定量和自身估算停止。皮肤未运行时，从冲煮头启动的热水最多可能流出 250 ml。",
     stopHwWNoScale:"需要连接电子秤。未连接时，咖啡机按自身估算的出水量停止。",
-    hwAppStop:"由此皮肤按秤重停止热水",
-    hwAppStopDesc:"默认开启。有些机器按自身计量会提前停止热水。连接电子秤时，将向机器请求设定量的 1.5 倍，再由皮肤在杯中达到目标重量时停止，与 de1app 的方式相同。此界面未运行时，从冲煮头启动热水可能最多多出一半水量。",
     hwTab:"热水",
     hwFlow:"流量",
     hwFlowDesc:"咖啡机的热水出水速度。流量越小耗时越长，越大越容易飞溅，停止后也会略多出水。",
@@ -5411,7 +5433,6 @@ var I18N={
     sf_variety:"品种",
     sf_producer:"生产者",
     sf_region:"产区",
-    recipeFromLast:"已恢复此曲线上一杯的配方（{n}）",
     lockedBrewing:"萃取过程中无法更换曲线。",
     brewingNow:"萃取中，曲线已锁定",
     exitDash:"Decaid 主页",
@@ -5678,7 +5699,7 @@ var I18N={
     dosingReading:"称粉读数",
     dosingTareHint:"主界面粉量旁的 ⚖ 也可归零，无需进入此页。",
     dosingWaiting:"等待电子秤",
-    dosingWaitBrew:"先等待萃取秤连接",
+    dosingWaitBrew:"等待咖啡机和萃取秤先连接",
     dosingTare:"归零",
     dosingHeld:"称粉秤已连接",
     dosingHoldFailed:"无法连接称粉秤",
@@ -6417,8 +6438,7 @@ function fitStage(){ var a=document.querySelector('.app'); var s=Math.min(window
   // backdrop every frame, so the glass gives up its blur exactly where it costs.
   document.body.classList.toggle('scaled',scaled); }
 document.addEventListener('visibilitychange',function(){
-  if(!document.hidden&&typeof fxKick==='function') fxKick();
-  if(!document.hidden&&typeof maybeAutoScanDosing==='function') maybeAutoScanDosing(); });
+  if(!document.hidden&&typeof fxKick==='function') fxKick(); });
 var RESUME_AFTER=15000, RESUME_THROTTLE=20000, _hiddenAt=0, _lastResume=0;
 function maybeResume(force){
   if(document.visibilityState==='hidden') return;
@@ -6623,7 +6643,7 @@ function initWebSockets(){
     state.deviceBusy=scanning;
     // A connected machine in the device list means we're connected, regardless of phase.
     var machineConnected=false, scaleConnected=false, machineName=null, scaleName=null;
-    state.devices=m.devices||[];
+    state.devices=devicesDuringScan(m.devices||[]);
     if(m.devices){ m.devices.forEach(function(d){
       if(d.type==='machine'){ if(!machineName||d.state==='connected') machineName=d.name; if(d.state==='connected') machineConnected=true; }
       // A scale held as auxiliary is somebody else's; it is not the scale the shot is weighed on.
@@ -6631,11 +6651,11 @@ function initWebSockets(){
     }); }
     state.machineName=machineName; state.scaleName=scaleName;
     var wasConnected=state.connected, wasScale=state.scaleConnected;
+    noteConnStages(machineConnected,scaleConnected);
     state.connected=machineConnected||(phase==='ready');
     state.scaleConnected=scaleConnected;
     if(scaleConnected!==wasScale) syncWaterRoom();
     syncThermoWs();
-    if(scaleConnected&&!wasScale) maybeAutoScanDosing();
     updateConnUI(state.connected?'on':(scanning?'ing':'off'));
     var err=m.connectionStatus&&m.connectionStatus.error; if(err&&err.suggestion) toast(err.suggestion,'err');
     if(state.connected&&!wasConnected){ loadMachineInfo(); loadWorkflow(); loadThermoPlugins(); }
@@ -6725,7 +6745,7 @@ function bindActionLongPress(btn, tapFn, holdFn){
 // tap toggles: if machine already in that state, stop (go idle); else start.
 function doSteamAction(){ if(state.machine.state==='steam') api('PUT','/api/v1/machine/state/idle').then(function(){toast(t('tSteamStopped'),'ok');}).catch(function(){toast(t('stopFailed'),'err');}); else api('PUT','/api/v1/machine/state/steam').then(function(){toast(t('tSteamStarted'),'ok');}).catch(function(){toast(t('tSteamFailed'),'err');}); }
 function doFlushAction(){ if(state.machine.state==='flush') api('PUT','/api/v1/machine/state/idle').then(function(){toast(t('tFlushStopped'),'ok');}).catch(function(){toast(t('stopFailed'),'err');}); else api('PUT','/api/v1/machine/state/flush').then(function(){toast(t('tFlushStarted'),'ok');}).catch(function(){toast(t('tFlushFailed'),'err');}); }
-function doWaterAction(){ if(state.machine.state==='hotWater') api('PUT','/api/v1/machine/state/idle').then(function(){toast(t('tWaterStopped'),'ok');}).catch(function(){toast(t('stopFailed'),'err');}); else api('PUT','/api/v1/machine/state/hotWater').then(function(){toast(t('tWaterStarted'),'ok');}).catch(function(){toast(t('tWaterFailed'),'err');}); }
+function doWaterAction(){ if(state.machine.state==='hotWater'&&_hww) _hww.button=true; if(state.machine.state==='hotWater') api('PUT','/api/v1/machine/state/idle').then(function(){toast(t('tWaterStopped'),'ok');}).catch(function(){toast(t('stopFailed'),'err');}); else api('PUT','/api/v1/machine/state/hotWater').then(function(){toast(t('tWaterStarted'),'ok');}).catch(function(){toast(t('tWaterFailed'),'err');}); }
 
 // ── Machine state ───────────────────────────────────────────────────
 var _wasRefillStopped=false;
@@ -6786,8 +6806,7 @@ function onMachineState(ms,prev){
   // extraction has begun the shot runs until the espresso state itself ends.
   state.shotRunning=extracting||(state.shotRunning&&inEspresso);
   if(ms.state!==prev){
-    syncRecipeMode(ms,prev);
-    if(prev==='sleeping') maybeAutoScanDosing(); }
+    syncRecipeMode(ms,prev); }
   if(inEspresso&&!state.shotActive) primeShotDialog(true);
   state.shotActive=inEspresso;
   // Steam session lifecycle (records flow/pressure/steam temp; no DYE)
@@ -8242,14 +8261,26 @@ function reopenDosingWs(){
   _wsParked['dosing']=false;
   openWs('dosing','/ws/v1/scales/'+encodeURIComponent(id)+'/snapshot',dosingFrame,{optional:true}); }
 var _dosingHoldAt=0;
-var DOSING_BREW_WAIT=45000;
-var _dosingWaitAt=0;
-function brewScalePending(){
+// Connections in order of what matters: the machine, then the brewing scale,
+// then whatever else the skin connects by itself, each left to settle first.
+// Android drops a connect started while another is still coming up, and the
+// devices already held are the ones that wobble when it does.
+var MACHINE_SETTLE=10000, SCALE_SETTLE=5000, BREW_GIVE_UP=60000;
+var _machineUpAt=0, _brewUpAt=0, _dosingWaitAt=0;
+function noteConnStages(machineUp,brewUp){
+  var now=Date.now();
+  _machineUpAt=machineUp?(_machineUpAt||now):0;
+  _brewUpAt=brewUp?(_brewUpAt||now):0; }
+function brewScaleWanted(){
   var want=(gwSettings&&gwSettings.preferredScaleId)||'';
-  if(!want||want===dosingId()) return false;
-  return !state.scaleConnected; }
-function dosingWaitingForBrew(){
-  return !!(brewScalePending()&&_dosingWaitAt&&(Date.now()-_dosingWaitAt)<DOSING_BREW_WAIT); }
+  return !!want&&want!==dosingId(); }
+function connStagesSettled(){
+  var now=Date.now();
+  if(!_machineUpAt||now-_machineUpAt<MACHINE_SETTLE) return false;
+  if(!brewScaleWanted()) return true;
+  if(_brewUpAt) return now-_brewUpAt>=SCALE_SETTLE;
+  return now-_machineUpAt>=MACHINE_SETTLE+BREW_GIVE_UP; }
+function dosingWaitingForBrew(){ return !connStagesSettled(); }
 function holdDosingScale(id,announce){
   return api('PUT','/api/v1/devices/connect',{deviceId:id,connectionRole:'auxiliary'})
     .then(function(){ return confirmDosingHold(id,announce); })
@@ -8283,15 +8314,15 @@ function syncDosing(){
     if(state.dosingConnected){ state.dosingConnected=false; state.dosingWeight=null; syncDoseTake(); syncRecipe(); }
     return; }
   if(d.connectionRole==='auxiliary'){ if(dosingSocketDead()) reopenDosingWs(); return; }
-  if(d.connectionRole==='primary') return;
-  // Present but not held, and the brewing scale has not arrived yet: let the
-  // gateway finish looking for it before a second radio is claimed.
-  if(brewScalePending()){
-    if(!_dosingWaitAt) _dosingWaitAt=Date.now();
-    if(Date.now()-_dosingWaitAt<DOSING_BREW_WAIT) return;
-  } else _dosingWaitAt=0;
-  // Retry sparingly: a scale that refuses to connect should not be hammered
-  // every time the device list twitches.
+  dosingMaybeHold(); }
+// Present but not held: it joins once the machine and the brewing scale have
+// settled, and a scale that refuses is not hammered every time the list twitches.
+function dosingMaybeHold(){
+  if(_brewReconnectBusy) return;
+  if(!dosingSupported()||state.shotRunning) return;
+  var id=dosingId(), d=id?deviceById(id):null;
+  if(!d||d.connectionRole==='auxiliary'||d.connectionRole==='primary') return;
+  if(!connStagesSettled()) return;
   if(Date.now()-_dosingHoldAt<8000) return;
   _dosingHoldAt=Date.now();
   holdDosingScale(id,false); }
@@ -8376,6 +8407,7 @@ function milkToShot(){
       function(e){ toast(t('milkFailed')+' '+apiErrorText(e),'err'); }); }
 function tareDosingScale(){
   var id=dosingId();
+  if(id&&!deviceById(id)) return dosingScan();
   if(!id||!state.dosingConnected){ toast(t('doseNoScale'),'err'); return; }
   api('PUT','/api/v1/scales/'+encodeURIComponent(id)+'/tare')
     .then(function(){ toast(t('tared'),'ok'); })
@@ -8688,7 +8720,7 @@ function updateLockClock(){ var d=new Date();
   document.getElementById('lockDate').textContent=d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}); }
 // Show/hide the lock without issuing a state change (used when the machine itself reports sleep).
 function enterSleepLocalOnly(){ beginSleepUI(); }
-function wakeLocalOnly(){ endSleepUI(); maybeAutoScanDosing(); }
+function wakeLocalOnly(){ endSleepUI(); }
 function scaleRoleOf(d){
   if(d.id===brewScaleId()) return 'brew';
   if(d.id===dosingId()||d.connectionRole==='auxiliary') return 'dosing';
@@ -9046,8 +9078,12 @@ function connCellPool(kind){
           :(kind==='grinder')?connDevices('grinder')
           :(kind==='thermo')?thermoDevices()
           :(kind==='doser')?doserDevices().filter(function(d){ return d.state!=='connected'; })
-          :scaleDevices();
+          :scaleDevices().filter(function(d){ return !scaleHeldElsewhere(kind,d); });
   return list.filter(function(d){ return !now||d.id!==now.id; }); }
+function scaleHeldElsewhere(kind,d){
+  if(kind==='dosingScale') return d.id===brewScaleId()||d.connectionRole==='primary';
+  if(kind==='scaleBrew'){ var ds=dosingDevice(); return !!ds&&d.id===ds.id; }
+  return false; }
 // What a device is already doing elsewhere, so a scale is never offered as
 // if it were idle when it is weighing the shot.
 function connElsewhere(kind,d){
@@ -9103,11 +9139,10 @@ function connNowBlock(kind){
     if(rec&&rec.id!==context.grinderId)
       acts=connBtn(t('cnUse'),"connUseGrinder('"+escapeArg(rec.id)+"')",busy)+acts; }
   if(kind==='thermo') note=milkTempText()||'—';
-  return connLine(d,[connState(d),connVia(d)].filter(Boolean).join(' \u00b7 '),acts,true,note); }
+  return connLine(d,connVia(d),acts,true,note); }
 function connPoolBlock(kind){
   var busy=connLocked(), pool=connCellPool(kind);
-  if(!pool.length) return '<div class="cn-list"><div class="cn-none">'
-    +escapeHtml(t('connNothing'))+'</div></div>';
+  if(!pool.length) return '';
   return '<div class="cn-list">'+pool.map(function(d){
     var a=connBtn(t('connJoin'),connJoinCall(kind,d.id),busy||d.available===false||(kind==='doser'&&doserFull()));
     if(d.state!=='connected'&&d.available===false)
@@ -9115,11 +9150,12 @@ function connPoolBlock(kind){
     return connLine(d,[connElsewhere(kind,d),connState(d),connVia(d)].filter(Boolean).join(' \u00b7 '),
       a,false,kind==='grinder'?connGrinderNote(d):''); }).join('')+'</div>'; }
 function connCell(c){
+  var empty=c.key!=='doser'&&!connCellNow(c.key);
   return '<div class="cn-cell'+(c.wide?' wide':'')+'" data-cell="'+c.key+'"><div class="cn-sec-h"><span class="cn-sec-g">'+c.glyph+'</span>'
     +escapeHtml(t(c.key))
-    +(c.key==='doser'?'<span class="cn-sec-x">'+doserHeadExtra()+'</span>':'')+'</div>'
-    +'<div class="cn-now-h">'+escapeHtml(t('connNowHeld'))+'</div>'
-    +connNowBlock(c.key)+connPoolBlock(c.key)+'</div>'; }
+    +(c.key==='doser'?'<span class="cn-sec-x">'+doserHeadExtra()+'</span>':'')
+    +(empty?'<span class="cn-none">'+escapeHtml(t('connNoneHeld'))+'</span>':'')+'</div>'
+    +(empty?'':connNowBlock(c.key))+connPoolBlock(c.key)+'</div>'; }
 function renderConnModal(){
   var box=document.getElementById('connList'); if(!box) return;
   var other=connDevices('other').filter(function(d){ return !isThermo(d)&&!isDoser(d); });
@@ -9142,16 +9178,28 @@ function connOpen(){ var o=document.getElementById('connOverlay');
   return !!(o&&o.classList.contains('show')); }
 function refreshConnDevices(){
   return api('GET','/api/v1/devices').then(function(list){
-    if(Array.isArray(list)) state.devices=list;
+    if(Array.isArray(list)) state.devices=devicesDuringScan(list);
   }).catch(function(){}).then(function(){ syncThermoWs(); syncDoser();
     updateConnUI(); renderConnModal(); syncDosing(); renderDosingRow(); }); }
+// A scan on the gateway starts by dropping every device that is not connected
+// and adds each back as it is heard again, so the sheet emptied and refilled
+// under the finger. While a scan runs, what was in reach just before it stays
+// listed, as in reach; the gateway's own list is taken again once it ends.
+var _scanSeen=null, _scanDepth=0;
+function scanBegin(){ if(!_scanDepth++) _scanSeen=(state.devices||[]).slice(); }
+function scanEnd(){ if(_scanDepth>0&&--_scanDepth) return; _scanDepth=0; _scanSeen=null; }
+function devicesDuringScan(list){
+  list=list||[];
+  if(!_scanSeen) return list;
+  var have={}; list.forEach(function(d){ have[d.id]=1; });
+  return list.concat(_scanSeen.filter(function(d){ return d&&!have[d.id]; })
+    .map(function(d){ var c={}; for(var k in d) c[k]=d[k]; c.state='discovered'; delete c.connectionRole; return c; })); }
 // Discovery only. The gateway's connecting scan fills empty slots by itself,
 // which is the one thing nobody wants while standing in a sheet deciding by
 // hand which scale weighs the shot.
 function connScan(){
   if(connLocked()) return;
-  _dosingAutoScanAt=0; _dosingDiscoverAt=0; _dosingMiss=0;
-  _dosingScanning=true; renderConnModal(); syncConnDosing();
+  _dosingScanning=true; scanBegin(); renderConnModal(); syncConnDosing();
   var before=(state.devices||[]).length;
   return api('GET','/api/v1/devices/scan?connect=false',null,60000)
     .then(function(list){ if(Array.isArray(list)) state.devices=list;
@@ -9159,7 +9207,7 @@ function connScan(){
       toast(found>before?t('dosingScanFound').replace('{n}',found-before)
                         :t('dosingScanNone'),'ok'); },
       function(e){ toast(t('dosingScanFailed')+' '+apiErrorText(e),'err'); })
-    .then(function(){ _dosingScanning=false; _dosingHoldAt=0;
+    .then(function(){ _dosingScanning=false; _dosingHoldAt=0; scanEnd();
       syncConnDosing(); return refreshConnDevices(); }); }
 function connPick(side,id){
   if(connLocked()) return;
@@ -9324,11 +9372,47 @@ function hwSet(key,raw){
 function hwPaneHtml(){
   return hwStepRow('waterFlow','hwFlow','hwFlowDesc','ml/s')
     +stopHwRowHtml()
-    +row('hwAppStop','hwAppStopDesc',sw('setHwAppStop',!prefs.hwAppStopOff,'setHwAppStop(this.checked)'))
-    +flowMultRow('hotWaterFlowMultiplier',t('fcHotWater'),0.05,2); }
+    +hwNoVolRowHtml()
+    +flowMultRow('hotWaterFlowMultiplier',t('fcHotWater'),0.05,2)
+    +hwLogHtml(); }
+// One switch for stopping on the scale. On, the skin stops the pour and the
+// gateway's own stop is left on behind it; off, both are off and the machine
+// stops on its own count. The gateway's switch is shared with other skins, so
+// it is only written when this one is pressed.
 function stopHwRowHtml(){
-  var sc=!!state.scaleConnected, on=sc&&(gwSettings||{}).stopHotWaterAtWeight!==false;
-  return row('stopHwW',sc?'stopHwWDesc':'stopHwWNoScale',sw('setStopHw',on,'setStopHotWaterAtWeight(this.checked)',!sc)); }
+  var sc=!!state.scaleConnected, on=sc&&!prefs.hwAppStopOff;
+  return row('stopHwW',sc?'stopHwWDesc':'stopHwWNoScale',sw('setStopHw',on,'setHwScaleStop(this.checked)',!sc)); }
+function setHwScaleStop(on){ setHwAppStop(on); setStopHotWaterAtWeight(on); if(spOpen()) renderSpContent(); }
+function hwNoVolRowHtml(){
+  var can=!!state.scaleConnected&&!prefs.hwAppStopOff;
+  return '<div class="set-row"><div class="set-info"><div class="set-name">'+escapeHtml(t('hwNoVol'))+'</div>'
+    +'<div class="set-desc">'+escapeHtml(t('hwNoVolDesc').replace('{s}',hwDurCeil()))+'</div></div>'
+    +sw('setHwNoVol',can&&!!prefs.hwNoVolume,'setHwNoVolume(this.checked)',!can)+'</div>'; }
+// What each pour did, kept on this device: the cup, the machine's own count
+// and time, and the stop. A pour that ends short says here whether the
+// machine's count, its clock, the gateway, the skin or a button ended it.
+function hwLog(){ var l=lsGet('aurora_hw_log'); return Array.isArray(l)?l:[]; }
+function hwLogHtml(){
+  var list=hwLog(); if(!list.length) return '';
+  function g(v){ return v==null?'\u2014':(+v).toFixed(0); }
+  return '<div class="set-row"><div class="set-info"><div class="set-name">'+escapeHtml(t('hwLog'))+'</div>'
+    +'<div class="set-desc">'+escapeHtml(t('hwLogDesc'))+'</div></div>'
+    +'<div class="hw-log-acts"><button class="m-btn" onclick="hwLogCopy()">'+escapeHtml(t('hwLogCopy'))+'</button>'
+    +'<button class="m-btn" onclick="hwLogClear()">'+escapeHtml(t('hwLogClear'))+'</button></div></div>'
+    +'<div class="hw-log" id="hwLog">'+list.slice(0,10).map(function(r){
+      var line=(r.scale?t('hwLogCup').replace('{c}',g(r.cup)).replace('{s}',g(r.cupAtStop)):t('hwLogNoScale'))
+        +' \u00b7 '+t('hwLogMachine').replace('{m}',g(r.machineMl)).replace('{v}',r.sentVol>0?g(r.sentVol):'\u2014').replace('{t}',(+r.secs||0).toFixed(1))
+        +(r.jumps>0?t('hwLogJumps').replace('{n}',r.jumps):'');
+      return '<div class="hw-log-row"><div class="hw-log-h">'+escapeHtml(t('hwLogHead').replace('{d}',fmtShotDate({timestamp:new Date(r.at).toISOString()})).replace('{g}',g(r.target)))
+        +' \u00b7 <b>'+escapeHtml(t('hwr'+r.reason).replace('{s}',g(r.dur)))+'</b></div>'
+        +'<div class="hw-log-d">'+escapeHtml(line)+'</div></div>'; }).join('')+'</div>'; }
+function hwLogCopy(){
+  var txt=JSON.stringify(hwLog(),null,1);
+  function done(){ toast(t('hwLogCopied'),'ok'); }
+  function fallback(){ var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }catch(_){} document.body.removeChild(ta); }
+  try{ navigator.clipboard.writeText(txt).then(done,fallback); }catch(_){ fallback(); } }
+function hwLogClear(){ try{ localStorage.removeItem('aurora_hw_log'); }catch(_){} if(spOpen()) renderSpContent(); }
 function closeModal(e,id){ if(e&&e.target!==document.getElementById(id)) return; document.getElementById(id).classList.remove('show','primed'); ovSync();
   if(id==='keypadOverlay'&&KP.field==='__cb'&&KP.cb&&KP.cb.onCancel) KP.cb.onCancel(); }
 // Whoever is working the machine from the group head is done with the screen,
@@ -9490,7 +9574,7 @@ function syncFlushModal(){ ['flushTemp','flushDur','flushFlow'].forEach(auxShow)
 var AUX_NUM={
   steamTemp:{min:0,max:165,dp:0}, steamDur:{min:0,max:120,dp:0}, steamFlow:{min:0,max:2.5,dp:1},
   flushTemp:{min:60,max:95,dp:0},  flushDur:{min:1,max:20,dp:0},  flushFlow:{min:1,max:10,dp:1},
-  waterTemp:{min:20,max:100,dp:0}, waterVol:{min:0,max:500,dp:0},
+  waterTemp:{min:20,max:100,dp:0}, waterVol:{min:0,max:250,dp:0},
   waterDur:{min:0,max:120,dp:0},   waterFlow:{min:1,max:10,dp:1}};
 function auxShow(key){
   var c=AUX_NUM[key], el=document.getElementById(key+'V');
@@ -9532,7 +9616,7 @@ var AUX_KINDS={
             {k:'flushFlow',step:0.5,min:1,max:10,dec:1,unit:'flowShort'}]},
   water:{ico:'💧',state:'hotWater',act:'doWaterAction',open:'openWaterModal',sync:'syncWaterModal',cols:2,
     fields:[{k:'waterTemp',step:1,min:20,max:100,dec:0,unit:'tempShort'},
-            {k:'waterVol',step:10,min:0,max:500,dec:0,unit:'mlShort'}]}
+            {k:'waterVol',step:10,min:0,max:250,dec:0,unit:'mlShort'}]}
 };
 // A field with a second step gets four buttons, so its buttons carry the
 // number they move by and its column is given the room for them.
@@ -9605,19 +9689,29 @@ var _waterPushKeys={};
 // gateway stops the pour on the scale. But the machine also stops when its own
 // pump count reaches that volume, and on some machines that count runs well
 // ahead of the cup, so it stops first (decaid #1119). So the skin does what
-// de1app does: with a scale the machine gets half again and the skin stops the
-// pour on the scale. A switch in the hot water tab turns it off. The target is remembered so the
-// room read back is shown as the target; without the choice, a room left over
-// is put back to the target once.
-var WATER_ROOM=1.5, WATER_ROOM_MAX=250, WATER_SETTLE_MS=3000, WATER_LOOK_DEF=0.3;
-var _waterVolSent=null, _hww=null;
-function waterRoomFor(v){ v=+v||0; return v>0?Math.max(v,Math.min(WATER_ROOM_MAX,Math.ceil(v*WATER_ROOM))):v; }
+// de1app does (binary.tcl): with a scale the machine is asked for 250 ml,
+// whatever the target, and the skin stops the pour on the scale. A switch in
+// the hot water tab turns it off. The target is remembered so the 250 read
+// back is shown as the target; without the choice, a 250 left over is put
+// back to the target once. The machine takes one byte, so no target goes over 250.
+var WATER_ROOM_MAX=250, WATER_SETTLE_MS=3000, WATER_LOOK_DEF=0.3;
+var _waterVolSent=null, _waterDurSent=null, _hww=null;
+// Chosen, the machine is given no volume at all and only a time limit, so its
+// own count cannot end the pour (decaid #1128: the firmware times a pour only
+// when no volume is set). The limit is the amount at half the set flow, plus 5 s.
+function hwNoVol(){ return !!prefs.hwNoVolume&&waterRoomOn(); }
+function hwDurCeil(){
+  var tgt=+settings.waterVol||0, fl=+settings.waterFlow||0;
+  if(!(tgt>0)||!(fl>0)) return 60;
+  return Math.max(10,Math.min(255,Math.ceil(tgt/(fl*0.5))+5)); }
+function waterRoomFor(v){ v=+v||0; return v>0?(hwNoVol()?0:WATER_ROOM_MAX):v; }
 function waterRoomOn(){ return !prefs.hwAppStopOff&&!!state.scaleConnected; }
 function waterTargetFrom(v){
   var mine=+lsGet('aurora_water_target')||0;
   if(prefs.hwAppStopOff){ try{ localStorage.removeItem('aurora_water_target'); }catch(_){} }
   return (mine>0&&v!==mine&&v===waterRoomFor(mine))?mine:null; }
 function waterValue(key){
+  if(key==='waterDur') return hwNoVol()?hwDurCeil():settings.waterDur;
   if(key!=='waterVol') return settings[key];
   var v=+settings.waterVol||0;
   return waterRoomOn()?waterRoomFor(v):v; }
@@ -9626,30 +9720,76 @@ function waterVolSent(v){
   if(!prefs.hwAppStopOff&&v!==+settings.waterVol) lsSet('aurora_water_target',+settings.waterVol);
   else { try{ localStorage.removeItem('aurora_water_target'); }catch(_){} } }
 function syncWaterRoom(){
-  if(_waterVolSent==null||waterValue('waterVol')===_waterVolSent) return;
-  pushAux('water','waterVol'); }
+  if(_waterVolSent!=null&&waterValue('waterVol')!==_waterVolSent) pushAux('water','waterVol');
+  if(hwNoVol()&&_waterDurSent!==waterValue('waterDur')) pushAux('water','waterDur'); }
 function applyHotWaterData(hw){
   if(hw.targetTemperature) settings.waterTemp=hw.targetTemperature;
   if(hw.flow>0) settings.waterFlow=+hw.flow;
-  if(hw.duration>0) settings.waterDur=+hw.duration;
-  if(hw.volume){ var mine=waterTargetFrom(hw.volume);
-    settings.waterVol=mine||hw.volume; _waterVolSent=hw.volume; syncWaterRoom(); } }
+  if(hw.duration>0){ settings.waterDur=+hw.duration; _waterDurSent=+hw.duration; }
+  if(hw.volume!=null){ var mine=waterTargetFrom(+hw.volume||0);
+    if(mine||hw.volume>0) settings.waterVol=mine||+hw.volume;
+    _waterVolSent=+hw.volume||0; syncWaterRoom(); } }
 function setHwAppStop(on){ prefs.hwAppStopOff=!on; savePrefs();
   if(_waterVolSent==null) pushAux('water','waterVol'); else syncWaterRoom(); }
+function setHwNoVolume(on){ prefs.hwNoVolume=!!on; savePrefs();
+  if(_waterVolSent==null) pushAux('water','waterVol'); else syncWaterRoom();
+  if(spOpen()) renderSpContent(); }
+// A cup put down or lifted, or a tare landing late, moves the weight faster
+// than any pour can. Such a step is not water: the base moves with it, so the
+// cup is measured from where it was and a pour is not ended by a bump.
+var WATER_JUMP=25, WATER_FLOW_MAX=20;
 function waterWeightTick(watering){
-  if(!watering){ _hww=null; return; }
+  if(!watering){ if(_hww) hwFinish(_hww); _hww=null; return; }
   var now=state.snapTime||Date.now();
-  if(!_hww) _hww={t0:now,base:null,sent:false};
-  var m=_hww;
-  if(m.sent||!waterRoomOn()||state.scaleWeight==null) return;
-  if(now-m.t0<=WATER_SETTLE_MS){ m.base=(m.base==null)?state.scaleWeight:Math.min(m.base,state.scaleWeight); return; }
+  if(!_hww) _hww={t0:now,base:null,last:null,lastT:now,sent:false,jumps:0,poured:0,target:+settings.waterVol||0,
+    at:Date.now(),sentVol:_waterVolSent,dur:_waterDurSent!=null?_waterDurSent:(+settings.waterDur||0),flowSet:+settings.waterFlow||0,skinStop:waterRoomOn(),
+    gwStop:!!(gwSettings&&gwSettings.stopHotWaterAtWeight!==false&&state.scaleConnected),
+    machineMl:0,flowT:null,secs:0,cupAtStop:null,button:false,trace:[],traceAt:0,scale:false};
+  var m=_hww, w=state.scaleWeight;
+  hwMachineTick(m,now);
+  if(w==null) return;
+  m.scale=true;
+  if(m.last!=null&&m.base!=null){
+    var dt=Math.max(0,now-m.lastT)/1000, step=w-m.last;
+    if(Math.abs(step)>WATER_JUMP+WATER_FLOW_MAX*dt){ m.base+=step; m.jumps++; m.last=w; m.lastT=now; return; } }
+  m.last=w; m.lastT=now;
+  if(now-m.t0<=WATER_SETTLE_MS){ m.base=(m.base==null)?w:Math.min(m.base,w); return; }
+  if(m.base==null) m.base=w;
+  m.poured=w-m.base;
+  if(m.sent||!waterRoomOn()) return;
   var target=+settings.waterVol||0;
-  if(!(target>0)||_waterVolSent==null||_waterVolSent<=target) return;
+  if(!(target>0)) return;
   var look=(gwSettings&&gwSettings.hotWaterFlowMultiplier>0)?gwSettings.hotWaterFlowMultiplier:WATER_LOOK_DEF;
-  var f=state.scaleFlow>0?state.scaleFlow:0;
-  if(state.scaleWeight-(m.base||0)+f*look<target) return;
-  m.sent=true;
+  var f=state.scaleFlow>0?Math.min(state.scaleFlow,WATER_FLOW_MAX):0;
+  if(m.poured+f*look<target) return;
+  m.sent=true; m.cupAtStop=m.poured;
   api('PUT','/api/v1/machine/state/idle').catch(function(){}); }
+function hwMachineTick(m,now){
+  if(m.flowT!=null&&now>m.flowT){ var d=(now-m.flowT)/1000; if(d<2) m.machineMl+=(+state.flow||0)*d; }
+  if(m.flowT==null||now>m.flowT){ m.flowT=now; m.secs=(now-m.t0)/1000; }
+  if(now-m.traceAt>=500&&m.trace.length<400){ m.traceAt=now;
+    m.trace.push([Math.round(m.secs*10)/10,Math.round((+state.flow||0)*10)/10,m.base!=null&&state.scaleWeight!=null?Math.round((state.scaleWeight-m.base)*10)/10:null]); } }
+function hwReason(m,endState){
+  if(m.sent) return 'Skin';
+  if(m.button) return 'Button';
+  if(endState==='needsWater'||endState==='refill') return 'Tank';
+  if(m.gwStop&&m.sentVol>0&&m.scale&&m.base!=null&&m.poured>=m.sentVol*0.95) return 'Gateway';
+  if(m.sentVol>0&&m.machineMl>=m.sentVol*0.9) return 'Volume';
+  if(!(m.sentVol>0)&&m.dur>0&&m.secs>=m.dur-1) return 'Time';
+  return 'Other'; }
+function hwFinish(m){
+  if(!(m.secs>0)) return;
+  var r={id:m.at,at:m.at,target:m.target,sentVol:m.sentVol,dur:m.dur,flowSet:m.flowSet,skinStop:m.skinStop,gwStop:m.gwStop,
+    secs:Math.round(m.secs*10)/10,machineMl:Math.round(m.machineMl),scale:m.scale&&m.base!=null,
+    cupAtStop:m.cupAtStop!=null?Math.round(m.cupAtStop*10)/10:Math.round(m.poured*10)/10,
+    cup:Math.round(m.poured*10)/10,jumps:m.jumps,endState:state.machine.state,reason:hwReason(m,state.machine.state),trace:m.trace};
+  var list=hwLog(); list.unshift(r); lsSet('aurora_hw_log',list.slice(0,20));
+  if(!r.scale) return;
+  setTimeout(function(){
+    if(state.scaleWeight==null) return;
+    var l=hwLog(), x=l.filter(function(y){ return y.id===r.id; })[0]; if(!x) return;
+    x.cup=Math.round((state.scaleWeight-m.base)*10)/10; lsSet('aurora_hw_log',l);
+    if(spOpen()) renderSpContent(); },3000); }
 function pushAux(kind,key){
   if(kind==='water'){ if(WATER_FIELD[key]) _waterPushKeys[key]=1; }
   else _auxPushSet[kind]=1;
@@ -9658,8 +9798,10 @@ function pushAux(kind,key){
     var kinds=Object.keys(_auxPushSet), wkeys=Object.keys(_waterPushKeys);
     _auxPushSet={}; _waterPushKeys={};
     function fail(e){ toast(t('mbSaveFailed')+' '+apiErrorText(e),'err'); }
+    if(hwNoVol()&&(wkeys.indexOf('waterVol')>=0||wkeys.indexOf('waterFlow')>=0)&&wkeys.indexOf('waterDur')<0) wkeys.push('waterDur');
     wkeys.forEach(function(k){ var hw={}; hw[WATER_FIELD[k]]=waterValue(k);
       if(k==='waterVol') waterVolSent(hw.volume);
+      if(k==='waterDur') _waterDurSent=hw.duration;
       api('PUT','/api/v1/workflow',{hotWaterData:hw}).catch(fail); });
     if(!kinds.length) return;
     var body={};
@@ -10014,10 +10156,37 @@ function pushProfileTemp(){ clearTimeout(_tempPushT); _tempPushT=setTimeout(func
   if(!curProfileObj||!curProfileObj.profile) return;
   api('PUT','/api/v1/workflow',{profile:brewProfileForMachine()})
     .catch(function(){ toast(t('tTempError'),'err'); }); },600); }
-function pushRecipe(){ clearTimeout(adjust._t); adjust._t=setTimeout(function(){
+// What is typed on the card wins. It stays on the card until the gateway has
+// confirmed it: no read of the workflow puts an older value back meanwhile, a
+// read sent before the save landed is dropped when it comes back, and a save
+// that fails is tried again. With nothing left to save the gateway's value is
+// taken, which is how a change made on another device arrives. The recipe and
+// the grind each keep one such lane.
+var RECIPE_RETRY_MS=5000, _wfSeq=0;
+function editLane(send){ return {edits:0,saved:0,saveSeq:0,retryT:null,send:send}; }
+function laneUnsaved(l){ return l.edits!==l.saved; }
+function laneHolds(l,readSeq){ return laneUnsaved(l)||readSeq<l.saveSeq; }
+function laneEdited(l){ l.edits++; clearTimeout(l.retryT); l.retryT=null; }
+function laneReset(l){ clearTimeout(l.retryT); l.retryT=null; l.edits=0; l.saved=0; l.saveSeq=0; }
+function laneSend(l){
+  var edit=l.edits;
+  return l.send().then(function(){
+    l.saveSeq=++_wfSeq;
+    if(edit===l.edits) l.saved=edit; },
+    function(){
+      if(edit!==l.edits) return;
+      clearTimeout(l.retryT);
+      l.retryT=setTimeout(function(){ l.retryT=null; if(laneUnsaved(l)) laneSend(l); },RECIPE_RETRY_MS); }); }
+var recipeLane=editLane(function(){
   var body={context:{targetDoseWeight:settings.doseIn,targetYield:settings.doseOut}};
   if(curProfileObj&&curProfileObj.profile&&!pouring()&&!state.shotRunning) body.profile=brewProfileForMachine();
-  api('PUT','/api/v1/workflow',body).catch(function(){}); },600); }
+  return api('PUT','/api/v1/workflow',body); });
+var grindLane=editLane(function(){
+  return api('PUT','/api/v1/workflow',{context:{grinderSetting:_grindTyped}}); });
+var _grindTyped=null;
+function recipeSyncReset(){ laneReset(recipeLane); laneReset(grindLane); _grindTyped=null; }
+function pushRecipe(){ clearTimeout(adjust._t); laneEdited(recipeLane);
+  adjust._t=setTimeout(function(){ laneSend(recipeLane); },600); }
 function syncRecipe(){
   document.getElementById('doseInVal').textContent=settings.doseIn.toFixed(1); document.getElementById('doseOutVal').textContent=settings.doseOut.toFixed(1);
   ['doseInUnit','doseOutUnit'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent='g'; });
@@ -10143,6 +10312,7 @@ function applyPrefsObject(p){
   if(p.stopLast&&typeof p.stopLast==='object') prefs.stopLast=p.stopLast;
   if(typeof p.autoDye==='boolean') prefs.autoDye=p.autoDye;
   if(typeof p.hwAppStopOff==='boolean') prefs.hwAppStopOff=p.hwAppStopOff;
+  if(typeof p.hwNoVolume==='boolean') prefs.hwNoVolume=p.hwNoVolume;
   if(typeof p.night==='boolean') prefs.night=p.night;
   if(typeof p.nightAuto==='boolean') prefs.nightAuto=p.nightAuto;
   if(typeof p.geminiKey==='string') prefs.geminiKey=p.geminiKey;
@@ -10507,7 +10677,7 @@ function kpConfirm(){ var v=parseFloat(KP.str);
   syncRecipe(); pushRecipe(); closeModal(null,'keypadOverlay'); }
 
 // ── Preferences & settings ──────────────────────────────────────────
-var prefs={ sleepExit:true, brewReconnect:true, hwAppStopOff:false, lockPics:true, lockMotion:'burst', lockOn:10, lockOff:50, autoDye:true, monClose:{}, night:false, nightAuto:false, geminiKey:'', claudeKey:'', openaiKey:'', aiProvider:'gemini', shotRead:'icon', wfKind:'', qrHost:'', lang:'auto', tempUnit:'C', weightUnit:'g', refillKitFull:'auto', monAuto:{espresso:true}, sleepDim:true, sleepBrightness:20,
+var prefs={ sleepExit:true, brewReconnect:true, hwAppStopOff:false, hwNoVolume:false, lockPics:true, lockMotion:'burst', lockOn:10, lockOff:50, autoDye:true, monClose:{}, night:false, nightAuto:false, geminiKey:'', claudeKey:'', openaiKey:'', aiProvider:'gemini', shotRead:'icon', wfKind:'', qrHost:'', lang:'auto', tempUnit:'C', weightUnit:'g', refillKitFull:'auto', monAuto:{espresso:true}, sleepDim:true, sleepBrightness:20,
   // Which scale this skin weighs a dose on. The gateway holds it open on request and attaches no meaning to it, so the choice lives here.
   dosingScaleId:'',
   // 'on' | 'off'. guideSrc is not chosen in settings: loading a profile makes
@@ -11164,14 +11334,7 @@ function dosingWatchdog(){
   if(Date.now()-_dosingGreyAt<10000) return;
   _dosingGreyAt=Date.now();
   reopenDosingWs(); }
-setInterval(dosingWatchdog,5000);
-var _dosingAutoScanAt=0, _dosingDiscoverAt=0, _dosingMiss=0;
-// Every automatic scan shares the radio with the scales and modules already
-// held, so a dosing scale that stays away is looked for half as often each
-// time it is missed, up to a quarter of an hour.
-var DOSING_SCAN_CAP=900000;
-function dosingScanGap(base){
-  return Math.min(base*Math.pow(2,Math.min(_dosingMiss,10)),Math.max(base,DOSING_SCAN_CAP)); }
+setInterval(function(){ dosingWatchdog(); dosingMaybeHold(); },5000);
 function dosingPickable(){
   var brew=brewScaleId(), pref=(gwSettings&&gwSettings.preferredScaleId)||'';
   return scaleDevices().filter(function(d){
@@ -11183,33 +11346,11 @@ function autoPickDosing(){
   prefs.dosingScaleId=c[0].id; savePrefs();
   _dosingHoldAt=0; _dosingWaitAt=0;
   toast(t('dosingPicked').replace('{n}',c[0].name||c[0].id),'ok'); }
-function maybeAutoScanDosing(){
-  if(_brewReconnectBusy||_asleep) return;
-  if(!dosingSupported()||document.hidden) return;
-  if(state.shotRunning||_dosingScanning) return;
-  if(brewScalePending()) return;
-  var id=dosingId();
-  if(id&&deviceById(id)){ _dosingMiss=0; return; }
-  // Nothing chosen yet is a hunt rather than a reunion: it needs the brewing
-  // scale actually up, and it is worth far less often.
-  if(!id&&!state.scaleConnected) return;
-  var gap=dosingScanGap(id?90000:600000);
-  if(Date.now()-(id?_dosingAutoScanAt:_dosingDiscoverAt)<gap) return;
-  if(id) _dosingAutoScanAt=Date.now(); else _dosingDiscoverAt=Date.now();
-  _dosingScanning=true; renderDosingRow(); syncConnDosing();
-  return api('GET','/api/v1/devices/scan?connect=false',null,60000)
-    .then(function(list){ if(Array.isArray(list)) state.devices=list; },function(){})
-    .then(function(){ _dosingScanning=false;
-      if(!dosingId()) autoPickDosing();
-      var now=dosingId();
-      if(now&&deviceById(now)) _dosingMiss=0; else _dosingMiss++;
-      renderDosingRow(); syncConnDosing(); syncDosing(); }); }
 function dosingScan(){
-  if(_brewReconnectBusy||_dosingScanning||state.shotRunning) return;
-  _dosingMiss=0;
-  _dosingScanning=true; renderDosingRow(); syncConnDosing();
+  if(_brewReconnectBusy||_dosingScanning||state.shotRunning) return Promise.resolve();
+  _dosingScanning=true; scanBegin(); renderDosingRow(); syncConnDosing();
   var before=scaleDevices().length;
-  api('GET','/api/v1/devices/scan?connect=false',null,60000)
+  return api('GET','/api/v1/devices/scan?connect=false',null,60000)
     .then(function(list){
       if(Array.isArray(list)) state.devices=list;
       var found=scaleDevices().length;
@@ -11217,7 +11358,9 @@ function dosingScan(){
         ? t('dosingScanFound').replace('{n}',found-before)
         : t('dosingScanNone'), 'ok'); },
       function(e){ toast(t('dosingScanFailed')+' '+apiErrorText(e),'err'); })
-    .then(function(){ _dosingScanning=false; renderDosingRow(); syncConnDosing(); syncDosing(); }); }
+    .then(function(){ _dosingScanning=false; scanEnd();
+      if(!dosingId()) autoPickDosing();
+      renderDosingRow(); syncConnDosing(); syncDosing(); }); }
 // Only the dosing rows are redrawn: rebuilding the whole page would drop the
 // select the user is in the middle of using.
 function renderDosingRow(){
@@ -13013,7 +13156,7 @@ function loadCentered(){
   if(_carLoadT) clearTimeout(_carLoadT);
   _carLoadT=setTimeout(function(){ _carLoadT=null;
     var q=carItems[carIndex];
-    if(q&&!(curProfileObj&&curProfileObj.id===q.id)) selectProfile(q,false,true); },420); }
+    if(q&&!(curProfileObj&&curProfileObj.id===q.id)) selectProfile(q); },420); }
 function toggleCurrentFav(){ var p=carItems[carIndex]; if(!p) return;
   // A profile the library does not know cannot be keyed by id, so favouriting it
   // would store a key that never matches anything again.
@@ -13026,35 +13169,9 @@ function toggleCurrentFav(){ var p=carItems[carIndex]; if(!p) return;
 // A profile write reaches the machine, and the machine is running frames from
 // the profile it holds. Changing it now changes the shot in progress.
 function brewLocked(){ return state.machine.state==='espresso'; }
-// A profile is pulled at a recipe, and the one it was last pulled at is a
-// better answer than whatever the profile before it left behind. Nothing
-// recorded for it is nothing to say, so the recipe is left alone. A profile
-// brings its dose and its ratio; the yield follows from the two, so neither a
-// scale's error nor a rounded target turns 1:2 into 1:1.98.
-function applyProfileRecipe(p){
-  var title=String(((p&&p.profile)||{}).title||'').trim(); if(!title) return;
-  return api('GET','/api/v1/shots?limit=50').then(function(r){
-    var items=(r&&(r.items||r.shots))||[];
-    var sh=items.filter(function(x){
-      var pr=(x.workflow&&x.workflow.profile)||{};
-      return String(pr.title||'').trim()===title; })[0];
-    if(!sh) return;
-    var ctx=(sh.workflow&&sh.workflow.context)||{}, an=sh.annotations||{};
-    var d=usNum(ctx.targetDoseWeight!=null?ctx.targetDoseWeight:an.actualDoseWeight);
-    var td=usNum(ctx.targetDoseWeight), ty=usNum(ctx.targetYield);
-    var ratio=(td>0&&ty>0)?Math.round(ty/td*100)/100
-      :(settings.doseIn>0?settings.doseOut/settings.doseIn:null);
-    if(d!=null) d=Math.round(d*10)/10;
-    if(!(d!=null&&d>=1&&d<=60)) d=settings.doseIn;
-    var y=(ratio>0)?Math.round(d*ratio*10)/10:null;
-    var moved=false;
-    if(Math.abs(d-settings.doseIn)>0.05){ settings.doseIn=d; moved=true; }
-    if(y!=null&&y>=1&&y<=200&&Math.abs(y-settings.doseOut)>0.05){ settings.doseOut=y; moved=true; }
-    if(!moved) return;
-    syncRecipe(); pushRecipe();
-    toast(t('recipeFromLast').replace('{n}',fmtShotDate(sh)),'ok');
-  }).catch(function(){}); }
-function selectProfile(p,keepGuideSrc,withRecipe){
+// Changing the profile leaves the recipe card as it is: the dose and yield
+// on it are the ones set by hand, and only a hand changes them.
+function selectProfile(p,keepGuideSrc){
   if(brewLocked()){ toast(t('lockedBrewing'),'err'); return; }
   // loading a profile by hand is the other half of the rule: the guideline
   // follows it from here, unless the load came from picking a guide shot.
@@ -13065,8 +13182,7 @@ function selectProfile(p,keepGuideSrc,withRecipe){
   var title=(p.profile&&p.profile.title)||p.id; curProfileObj=p;
   syncRecipe();
   if(chartBackToEspresso()) drawChart();
-  api('PUT','/api/v1/workflow',{profile:brewProfileForMachine(p.profile)}).then(function(){ toast('▶ '+title,'ok'); refreshCarouselMark(); stopSync();
-    if(withRecipe) applyProfileRecipe(p); }).catch(function(){ toast(t('tProfileError'),'err'); }); }
+  api('PUT','/api/v1/workflow',{profile:brewProfileForMachine(p.profile)}).then(function(){ toast('▶ '+title,'ok'); refreshCarouselMark(); stopSync(); }).catch(function(){ toast(t('tProfileError'),'err'); }); }
 // A profile that is not in the strip has to be pinned into it first; one that is
 // only needs the marker moved, which keeps the carousel from jumping.
 function refreshCarouselMark(){
@@ -14086,7 +14202,7 @@ function epSelect(p){ if(_epWide){ epToggleSel(p.id); return; } epOpenEditor(p);
 function epTap(p){
   if(_epWide){ epToggleSel(p.id); return; }
   if(p.visibility==='deleted'){ epOpenEditor(p); return; }
-  if(!(curProfileObj&&curProfileObj.id===p.id)) selectProfile(p,false,true);
+  if(!(curProfileObj&&curProfileObj.id===p.id)) selectProfile(p);
   epMarkLoaded(); }
 function epMarkLoaded(){
   var id=curProfileObj&&curProfileObj.id;
@@ -14911,14 +15027,7 @@ function applyUseSettings(){
 function useEditedProfile(){ if(!editing) return;
   var known=allProfiles.find(function(x){ return x.id===editing.id; });
   selectProfile(known&&!epDirty()?known:{ id:editing.id, profile:editing.profile, metadata:editing.metadata, isDefault:editing.isDefault });
-  var title=(editing.profile&&editing.profile.title)||'';
-  offerLastShotSettings({
-    name:splitTitle(title).name,
-    // the profile is the thing being chosen, so its own temperature is not
-    // something to carry over from an older shot of it
-    skip:['temp'],
-    test:function(sh){ var pr=(sh.workflow&&sh.workflow.profile)||{}; return !!title&&pr.title===title; },
-    after:closeEditPage }); }
+  closeEditPage(); }
 function epDirty(){ var known=allProfiles.find(function(x){ return x.id===editing.id; });
   return !known||JSON.stringify(known.profile)!==JSON.stringify(editing.profile); }
 function saveProfilePage(){ if(!editing) return;
@@ -15723,40 +15832,44 @@ var BEAN_KEYS=['coffeeName','coffeeRoaster','beanBatchId'], GRINDER_KEYS=['grind
 function bgCtxSnap(keys){ var o={}; keys.forEach(function(k){ o[k]=(context[k]===undefined?null:context[k]); }); return o; }
 function bgApplyCtx(ctx){ Object.assign(context,ctx); return api('PUT','/api/v1/workflow',{context:ctx}); }
 function bgRefreshUse(){ updateBeanInfo(); syncGrinder(); renderBgList(); }
-function bgAfterPick(prev,label,offer){
+// Picking a bean or a grinder changes only what was picked. A grind
+// remembered for the pair is offered, and set only when it is pressed.
+function bgAfterPick(prev,label,offer,grind){
   bgRefreshUse();
   if(_bgFromMain) closeBeanPage();
   var undo={label:t('undo'),fn:function(){ bgApplyCtx(prev).catch(function(){}); bgRefreshUse(); }};
-  toastActs(label,[undo]);
+  var lead=grind!=null?[{label:t('grindOffer').replace('{s}',grind),fn:function(){ setGrind(grind); }}]:[];
+  toastActs(label,lead.concat([undo]));
   findLastShotOffer(offer).then(function(o){
     if(!o) return;
-    toastActs(label,[{label:t('usOffer'),fn:function(){ showLastShotOffer(o,{name:offer.name}); }},undo]); }); }
+    toastActs(label,lead.concat([{label:t('usOffer'),fn:function(){ showLastShotOffer(o,{name:offer.name}); }},undo])); }); }
+function grindOffer(v){
+  if(v==null||v==='') return null;
+  return String(v)===String(context.grinderSetting==null?'':context.grinderSetting)?null:String(v); }
 function beanCtx(b){
   return pickBag(b).then(function(bag){
     var ctx={coffeeName:b.name,coffeeRoaster:b.roaster||null,beanBatchId:(bag&&bag.id)||null};
     var mem=grinderLive(context.grinderId)?null:grindFor(b.id,context.grinderId);
-    if(mem!=null&&mem!==String(context.grinderSetting==null?'':context.grinderSetting)) ctx.grinderSetting=mem;
-    return {ctx:ctx,bag:bag}; }); }
+    return {ctx:ctx,bag:bag,grind:grindOffer(mem)}; }); }
 function bgPickBean(id){
   var b=(beans||[]).filter(function(x){ return x.id===id; })[0]; if(!b) return Promise.resolve();
   var prev=bgCtxSnap(BEAN_KEYS.concat(['grinderSetting']));
   return beanCtx(b).then(function(r){
     var ctx=r.ctx, bag=r.bag;
     return bgApplyCtx(ctx).then(function(){
-      bgAfterPick(prev,t('beanPicked').replace('{n}',(b.name||'')+(bag?' \u00b7 '+batchLabel(bag):''))
-        +(ctx.grinderSetting!=null?' \u00b7 '+t('grindAt').replace('{s}',ctx.grinderSetting):''),
-        {name:b.name||'',skip:['bean'],test:function(sh){ var c=(sh.workflow&&sh.workflow.context)||{}; return !!b.name&&c.coffeeName===b.name; }}); }); })
+      bgAfterPick(prev,t('beanPicked').replace('{n}',(b.name||'')+(bag?' \u00b7 '+batchLabel(bag):'')),
+        {name:b.name||'',skip:['bean'],test:function(sh){ var c=(sh.workflow&&sh.workflow.context)||{}; return !!b.name&&c.coffeeName===b.name; }},r.grind); }); })
     .catch(function(){ toast(t('tFailed'),'err'); }); }
 function bgPickGrinder(id){
   var g=(grinders||[]).filter(function(x){ return x.id===id; })[0]; if(!g) return Promise.resolve();
   var prev=bgCtxSnap(GRINDER_KEYS);
   var ctx={grinderId:g.id,grinderModel:g.model||null};
-  if(g.grinderSetting!=null&&g.grinderSetting!=='') ctx.grinderSetting=String(g.grinderSetting);
   var bean=currentBean(), mem=(bean&&!grinderLive(g.id))?grindFor(bean.id,g.id):null;
-  if(mem!=null) ctx.grinderSetting=mem;
+  if(mem==null&&!grinderLive(g.id)) mem=g.grinderSetting;
+  var grind=grindOffer(mem);
   return bgApplyCtx(ctx).then(function(){
     bgAfterPick(prev,t('grinderPicked').replace('{n}',g.model||''),
-      {name:g.model||'',skip:['grinder'],test:function(sh){ var c=(sh.workflow&&sh.workflow.context)||{}; return !!g.model&&c.grinderModel===g.model; }}); })
+      {name:g.model||'',skip:['grinder'],test:function(sh){ var c=(sh.workflow&&sh.workflow.context)||{}; return !!g.model&&c.grinderModel===g.model; }},grind); })
     .catch(function(){ toast(t('tFailed'),'err'); }); }
 function bgSelectNew(type){ bgTab=type; aiImages=[]; bgBatchId=null; bgNewBatch=false; bgSel={type:type,obj:type==='bean'?{roaster:'',name:'',country:'',region:'',producer:'',processing:'',species:'',decaf:false,decafProcess:'',variety:[],altitude:null}:{model:'',burrs:'',burrType:'conical',burrSize:null,settingType:'numeric',settingSmallStep:0.1,settingBigStep:1.0,settingValues:[],grinderSetting:'',grindSpeed:null}}; renderBgList(); renderBgEditor(); }
 var _recFor=null;
@@ -20541,8 +20654,9 @@ function setGrind(v){
   if(live&&grinderSnap) grinderSnap.setting=String(v);
   if(live) gHold('setting',String(v));
   updateGrindRow();
+  _grindTyped=String(v); laneEdited(grindLane);
   clearTimeout(setGrind._t); setGrind._t=setTimeout(function(){
-    api('PUT','/api/v1/workflow',{context:{grinderSetting:String(v)}}).catch(function(){});
+    laneSend(grindLane);
     if(live)
       api('PUT','/api/v1/grinder/setting',{setting:String(v)})
         .then(function(){ gLanded('setting',String(v)); },
@@ -23108,9 +23222,12 @@ function syncMonitorGhc(){ if(_monOpen) syncMonitorHead(); }
 // ── Workflow bootstrap ──────────────────────────────────────────────
 function loadWorkflow(){
   if(loadBusy('workflow')) return;
+  var readSeq=++_wfSeq;
   api('GET','/api/v1/workflow').then(function(w){ if(!w) return;
   if(w.context){ context=w.context;
-    if(w.context.targetDoseWeight) settings.doseIn=w.context.targetDoseWeight; if(w.context.targetYield) settings.doseOut=w.context.targetYield; }
+    if(_grindTyped!=null&&laneHolds(grindLane,readSeq)) context.grinderSetting=_grindTyped;
+    if(!laneHolds(recipeLane,readSeq)){
+      if(w.context.targetDoseWeight) settings.doseIn=w.context.targetDoseWeight; if(w.context.targetYield) settings.doseOut=w.context.targetYield; } }
   if(w.steamSettings){ if(w.steamSettings.targetTemperature) settings.steamTemp=w.steamSettings.targetTemperature; if(w.steamSettings.duration) settings.steamDur=w.steamSettings.duration; if(w.steamSettings.flow) settings.steamFlow=w.steamSettings.flow; if(w.steamSettings.stopAtTemperature!=null) settings.milkStop=+w.steamSettings.stopAtTemperature||0; syncMilkTemp(); }
   if(w.rinseData){ if(w.rinseData.targetTemperature) settings.flushTemp=w.rinseData.targetTemperature; if(w.rinseData.duration) settings.flushDur=w.rinseData.duration; if(w.rinseData.flow) settings.flushFlow=w.rinseData.flow; }
   if(w.hotWaterData) applyHotWaterData(w.hotWaterData);
@@ -23146,6 +23263,7 @@ function loadDevices(){ api('GET','/api/v1/devices').then(function(list){
   list.forEach(function(d){ if(d.type==='machine'){ if(!machineName||d.state==='connected') machineName=d.name; if(d.state==='connected') machineConnected=true; } if(d.type==='scale'){ if(!scaleName||d.state==='connected') scaleName=d.name; if(d.state==='connected') scaleConnected=true; } });
   state.machineName=machineName; state.scaleName=scaleName;
   state.connected=machineConnected; state.scaleConnected=scaleConnected;
+  noteConnStages(machineConnected,scaleConnected);
   syncWaterRoom();
   updateConnUI(state.connected?'on':'off'); updateShotBtn();
   if(state.connected){ loadMachineInfo(); loadWorkflow(); loadThermoPlugins(); if(!_hbAt) signalPresence(); }

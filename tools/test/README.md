@@ -5,6 +5,7 @@ Chinese fork checks without a gateway:
 ```bash
 node tools/test/i18n.cjs
 node tools/test/yield-step.cjs
+node tools/test/sleep-scale.cjs
 ```
 
 The `yield` browser suite checks that the yield buttons also update the outgoing profile target while leaving the saved library profile unchanged.
@@ -86,7 +87,7 @@ style.
 | `chartfx` | graph curves pass through every sample without overshoot; a running shot is drawn a sample behind and read at one display time; water under the pressure line; the loaded cover in the middle moves on the clock; the dial needle eases on the clock |
 | `panes` | steam, flush and water: capped at the shot pane's height without being cut |
 | `profiles` | the library and the editor as two views of one page: covers full width, a profile opening into the fields, the way back |
-| `scales` | which scale is brewing and which is dosing, from the gateway's hold as well as the local preference; an absent dosing scale looked for less often each miss, never while hidden |
+| `scales` | which scale is brewing and which is dosing, from the gateway's hold as well as the local preference; manual dosing-scale discovery and connection order; preferred brewing-scale retries are covered separately by sleep-scale.cjs |
 | `workflow` | the header saying which drink is being made, chosen from the list or from a past workflow |
 | `compare` | the shot comparison takes the whole width of the shot detail, with its heading above its tabs and the overlay below them |
 | `rating` | the tasting answer stored on the gateway's 0-10 enjoyment scale and read back as stars, Visualizer's 0-100 brought down to it |

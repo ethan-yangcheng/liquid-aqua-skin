@@ -161,7 +161,7 @@ The rail across the top shows the steps: bean, profile, grind, recipe, and then 
 
 ![Devices](docs/devices.png)
 
-Tap the device button in the top bar. Each kind of device has its own cell, with what is **connected now** above and what else is **in reach** below:
+Tap the device button in the top bar. Each kind of device has its own cell, side by side, with what is connected now at the top and what else is **in reach** below it. An empty cell says so in its head and takes no more room. The brewing scale is not offered as the dosing scale, nor the other way round:
 
 | Cell | |
 |---|---|
@@ -172,7 +172,9 @@ Tap the device button in the top bar. Each kind of device has its own cell, with
 | Thermometer | appears when a thermometer plugin is on |
 | Bean doser | appears when the RedxKey doser plugin is on |
 
-**Find** looks again without connecting anything. The gateway stops looking once it has a scale, so a scale switched on later is only noticed this way.
+**Find** (next to the close button) looks again without connecting anything. The gateway stops looking once it has a scale, so a scale switched on later is only noticed this way. Devices in reach stay listed while it looks.
+
+The upstream skin does not scan by itself: a scan shares the Bluetooth radio with everything already connected. This maintained Chinese branch additionally offers optional, idle-only reconnection of the selected brewing scale (for example a Bookoo Mini switched on later); see [the customization register](CUSTOMIZATIONS.zh-CN.md#c04后开-bookoo-mini-时自动重连首选萃取秤). It does not automatically scan for a dosing scale. A dosing scale that is away is looked for when you tap it on the recipe card. What the skin connects by itself waits its turn: the machine first, then the brewing scale, each left to settle, and only then the dosing scale.
 
 ---
 
@@ -188,9 +190,9 @@ Tap an action in the top bar to run it, or hold it for its options. Each has up 
 | Flush | temperature, seconds, flow |
 | Hot water | temperature, volume, seconds, flow |
 
-The machine is given the volume as set, the way Streamline gives it. With a scale connected, the gateway stops hot water when the cup reaches that weight; without one the machine stops on its own estimate of the volume. The **Hot water** tab in Settings › Machine has, as in Streamline, the flow, the switch for the scale stop and how early it stops so that the cup lands on the target. Streamline's time limit is not offered: the machine ignores it whenever a volume is set ([decaid #1128](https://github.com/decentespresso/decaid/issues/1128)).
+The **Hot water** tab in Settings › Machine has, as in Streamline, the flow, one switch to stop on the scale and how early it stops so that the cup lands on the target. Below them, **Hot water log** lists the last pours: the target, what reached the cup (at the stop and after the drips), what the machine counted against the limit it was sent, how long it ran, and what stopped it: this skin on the scale, the button in this skin, the gateway on the scale, the machine's own count, its time limit, a low tank, or something else such as the group head. **Copy** puts the full record, with a flow and weight trace, on the clipboard. Streamline's time limit is not offered: the machine ignores it whenever a volume is set ([decaid #1128](https://github.com/decentespresso/decaid/issues/1128)).
 
-Some machines stop hot water on their own pump count well before the cup reaches the amount, so the gateway's scale stop never gets the chance ([decaid #1119](https://github.com/decentespresso/decaid/issues/1119)). So **Stop on the scale in this skin** is on by default (a switch in the same tab turns it off): with a scale the machine is asked for half again (up to 250 ml) and the skin stops the pour when the cup reaches the amount, as de1app does. A pour started at the group head while the skin is not running can then give up to half again.
+Some machines stop hot water on their own pump count well before the cup reaches the amount, so the gateway's scale stop never gets the chance ([decaid #1119](https://github.com/decentespresso/decaid/issues/1119)). So with a scale and **Stop hot water on the scale** on (the default), the machine is asked for 250 ml, whatever the amount, and the skin stops the pour when the cup reaches the amount, as de1app does; the gateway's own scale stop is left on behind it. A cup put down or lifted mid-pour, or a tare that lands late, is not taken for water. Off, both stops are off and the machine is given the amount and stops on its own estimate; the gateway's switch is shared with other skins, so it changes there too. Without a scale the machine always stops on its own estimate. **Leave the machine's water count out** (off by default, only with the scale stop on and a scale connected) goes further for a machine that counts more water than it gives: the machine is given no volume, only a time limit (the amount at half the set flow, plus 5 s), so its count cannot end the pour before the cup reaches the amount ([decaid #1128](https://github.com/decentespresso/decaid/issues/1128)). If the skin or the scale drops out, water keeps coming until that limit. The amount goes up to 250 ml, the most the machine takes. A pour started at the group head while the skin is not running can give up to 250 ml.
 
 ### Milk thermometer
 

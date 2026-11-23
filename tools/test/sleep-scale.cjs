@@ -63,6 +63,15 @@ function scaleContext(){
 }
 async function runScale(c){await c.reconnectBrewScale();c.advance(10001);await c.reconnectBrewScale();}
 async function scaleTests(){
+ // Upstream now checks auxiliary holds on a timer; it must not compete with
+ // the fork's primary-scale reconnect even when no device event is received.
+ const hold={_brewReconnectBusy:true,dosingSupported:()=>true,state:{shotRunning:false},
+   dosingId:()=> 'dosing',deviceById:()=>({id:'dosing'}),connStagesSettled:()=>true,
+   Date:{now:()=>20000},_dosingHoldAt:0,held:0,holdDosingScale(){hold.held++;}};
+ vm.createContext(hold);vm.runInContext(section('function dosingMaybeHold(){','function setDosingScale('),hold);
+ hold.dosingMaybeHold();assert.equal(hold.held,0,'auxiliary timer yields to primary retry');
+ hold._brewReconnectBusy=false;hold.dosingMaybeHold();assert.equal(hold.held,1,'auxiliary hold resumes normally');
+
  let c=scaleContext();await runScale(c);assert.equal(c.calls.filter(x=>x[0]==='PUT').length,1);
  assert.equal(c.calls.at(-1)[2].deviceId,'bookoo-mini');assert.equal(c.calls.at(-1)[2].connectionRole,'primary');
  const n=c.calls.length;await c.reconnectBrewScale();assert.equal(c.calls.length,n,'retry rate limited');
