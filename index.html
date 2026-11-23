@@ -3749,6 +3749,7 @@ window.addEventListener('error', function(e){ try{ var el=document.getElementByI
 // [data-i18n]; dynamic strings use t('key').
 var I18N={
   en:{
+    sleepExit:"Long-press sleep to leave", sleepExitDesc:"Hold for 0.8 seconds to sleep and leave Decaid. Returning wakes the machine unless it is busy. Turn off to stay in the skin.", brewReconnect:"Reconnect the preferred brewing scale", brewReconnectDesc:"While idle and awake, look for the selected brewing scale about every 30 seconds if it is disconnected. Select it once in Devices first.",
     tankLevelTitle:"Water tank level",
     groupTempTitle:"Group head temperature",
     mixTempTitle:"Mix (blended water) temperature",
@@ -4226,6 +4227,7 @@ var I18N={
     tapWake:'Tap anywhere to wake'
   },
   ko:{
+    sleepExit:"길게 눌러 절전 후 나가기", sleepExitDesc:"0.8초 누르면 절전 후 Decaid를 나갑니다. 돌아오면 사용 중이 아닌 머신을 깨웁니다. 끄면 스킨에 머뭅니다.", brewReconnect:"선호 추출 저울 다시 연결", brewReconnectDesc:"머신이 깨어 있고 대기 중일 때 연결이 끊긴 선택된 추출 저울을 약 30초마다 찾습니다. 먼저 기기에서 저울을 선택하세요.",
     tankLevelTitle:"물탱크 수위",
     groupTempTitle:"그룹헤드 온도",
     mixTempTitle:"혼합수 온도",
@@ -4706,6 +4708,7 @@ var I18N={
     tapWake:'화면을 눌러 깨우기'
   },
   zh:{
+    sleepExit:"长按休眠后离开应用", sleepExitDesc:"按住 0.8 秒后休眠并离开 Decaid；返回时唤醒未在工作的咖啡机。关闭后留在皮肤中。", brewReconnect:"自动重连首选萃取秤", brewReconnectDesc:"机器唤醒且空闲时，约每 30 秒寻找一次断开的首选萃取秤。请先在设备列表中选定萃取秤。",
     tankLevelTitle:"水箱水位",
     groupTempTitle:"冲煮头温度",
     mixTempTitle:"混合水温",
@@ -6617,6 +6620,7 @@ function initWebSockets(){
   openWs('devices','/ws/v1/devices',function(m){
     var phase=m.connectionStatus&&m.connectionStatus.phase;
     var scanning=(phase==='scanning'||phase==='connectingMachine'||phase==='connectingScale');
+    state.deviceBusy=scanning;
     // A connected machine in the device list means we're connected, regardless of phase.
     var machineConnected=false, scaleConnected=false, machineName=null, scaleName=null;
     state.devices=m.devices||[];
@@ -6688,14 +6692,15 @@ function clearBtn(b){ b.onclick=null; b.onmousedown=null; b.onmouseup=null; b.on
 // For a card in a scrolling list. A finger that moves is scrolling, so it
 // neither taps nor holds, and the page keeps its scroll; the click that follows
 // a hold is swallowed. The right button and the keyboard reach the hold too.
-function bindHold(el,tapFn,holdFn){
+function bindHold(el,tapFn,holdFn,opts){
+  opts=opts||{};
   var timer=null, held=false, moved=false, x=0, y=0;
   function stop(){ if(timer){ clearTimeout(timer); timer=null; } el.classList.remove('pressing'); }
   el.addEventListener('pointerdown',function(e){
     if(e.button>0) return;
     held=false; moved=false; x=e.clientX; y=e.clientY; stop();
     el.classList.add('pressing');
-    timer=setTimeout(function(){ timer=null; held=true; el.classList.remove('pressing'); holdFn(); },550); });
+    timer=setTimeout(function(){ timer=null; held=true; el.classList.remove('pressing'); holdFn(); },opts.duration||550); });
   el.addEventListener('pointermove',function(e){
     if(timer&&(Math.abs(e.clientX-x)>10||Math.abs(e.clientY-y)>10)){ moved=true; stop(); } });
   el.addEventListener('pointerup',stop);
@@ -6705,7 +6710,7 @@ function bindHold(el,tapFn,holdFn){
     if(held||moved){ held=false; moved=false; e.preventDefault(); e.stopPropagation(); return; }
     tapFn(e); });
   el.addEventListener('contextmenu',function(e){
-    e.preventDefault(); stop(); if(!held){ held=true; holdFn(); } });
+    e.preventDefault(); if(opts.contextMenuHolds===false) return; stop(); if(!held){ held=true; holdFn(); } });
   el.addEventListener('keydown',function(e){
     if(e.target!==el) return;
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tapFn(e); }
@@ -6726,10 +6731,10 @@ function doWaterAction(){ if(state.machine.state==='hotWater') api('PUT','/api/v
 var _wasRefillStopped=false;
 function refillStopped(ms){ return !!ms&&ms.state==='needsWater'&&ms.substate==='refillStopped'; }
 function onMachineState(ms,prev){
+  state.machineSeen=true;
   // Keep the screen-saver lock in sync with the machine's sleep state.
-  var lockShown=document.getElementById('lockScreen').classList.contains('show');
-  if(ms.state==='sleeping'&&!lockShown&&!fwHoldsAwake()){ enterSleepLocalOnly(); }
-  else if(ms.state!=='sleeping'&&lockShown){ wakeLocalOnly(); }
+  syncSleepScreen(ms.state);
+  handleSleepExitReturn();
   // The tank chip reads the machine state, so it has to be redrawn when that
   // changes and not only when a new water level arrives.
   if(MAINT[ms.state]) maintTrack(ms.state,ms.substate||'');
@@ -8270,6 +8275,7 @@ function releaseDosingScale(id){
 // turns up, and let the socket follow it.
 function syncDosing(){
   renderDosingRow(); syncConnDosing();
+  if(_brewReconnectBusy) return;
   if(!dosingSupported()) return;
   var id=dosingId(); if(!id) return;
   var d=deviceById(id);
@@ -8386,15 +8392,47 @@ function doseFromScale(){ var w=doseSourceWeight();
 function doTare(){
   if(!state.scaleConnected){ toast(t('doseNoScale'),'err'); return; }
   api('PUT','/api/v1/scale/tare').then(function(){toast(t('tared'),'ok');}).catch(function(e){toast(e.message,'err');}); }
-function doSleep(){ if(state.machine.state==='sleeping'){ wakeFromSleep(); } else { enterSleep(); } }
-function canExitApp(){ try{ return !!(window.decentApp&&typeof window.decentApp.exitApp==='function'); }catch(_){ return false; } }
-function sleepAndLeave(){
-  beginSleepUI();
-  return api('PUT','/api/v1/machine/state/sleeping').catch(function(){ toast(t('tSleepFailed'),'err'); })
-    .then(function(){ try{ window.decentApp.exitApp(); }catch(_){} }); }
-function sleepHold(){ if(canExitApp()&&state.machine.state!=='sleeping') sleepAndLeave(); else doSleep(); }
-function bindSleepBtn(){ var b=document.getElementById('btnSleep'); if(!b||b._hold) return; b._hold=true; bindHold(b,doSleep,sleepHold); }
-// Show the screen-saver lock, pause background animation, and tell the machine to sleep.
+// Sleep commands follow Streamline: only confirmed machine state raises the saver.
+var _sleepRequestBusy=false, _wakeUntil=0, _wakeGraceT=null;
+var SLEEP_EXIT_KEY='aurora_sleep_exit_pending';
+function clearWakeRequest(){ _wakeUntil=0; clearTimeout(_wakeGraceT); _wakeGraceT=null; }
+function noteWakeRequested(){ clearWakeRequest(); _wakeUntil=Date.now()+3000;
+  _wakeGraceT=setTimeout(function(){ clearWakeRequest(); syncSleepScreen(state.machine.state); },3000); }
+function syncSleepScreen(ms){
+  if(ms!=='sleeping') clearWakeRequest();
+  var show=ms==='sleeping'&&!fwHoldsAwake()&&Date.now()>=_wakeUntil;
+  if(show&&!_asleep) enterSleepLocalOnly();
+  else if(!show&&_asleep) wakeLocalOnly(); }
+function canExitApp(){ try{ return !!(window.__DECENT_HOST__&&window.decentApp&&typeof window.decentApp.exitApp==='function'); }catch(_){ return false; } }
+function requestSleepState(command,leave){
+  if(_sleepRequestBusy||_fwRunning) return Promise.resolve();
+  _sleepRequestBusy=true;
+  if(command==='idle'){ noteWakeRequested(); if(_asleep) endSleepUI(); }
+  else clearWakeRequest();
+  return api('PUT','/api/v1/machine/state/'+command).then(function(){
+    if(!leave||command!=='sleeping'||!canExitApp()||prefs.sleepExit===false) return;
+    var marker=Date.now(); lsSet(SLEEP_EXIT_KEY,marker);
+    var leaving=false;
+    try{ leaving=window.decentApp.exitApp()===true; }catch(_){}
+    if(!leaving) lsSet(SLEEP_EXIT_KEY,null);
+    else setTimeout(function(){
+      if(!document.hidden&&lsGet(SLEEP_EXIT_KEY)===marker) lsSet(SLEEP_EXIT_KEY,null); },3000);
+  }).catch(function(){
+    clearWakeRequest(); syncSleepScreen(state.machine.state);
+    toast(t(command==='idle'?'tWakeFailed':'tSleepFailed'),'err');
+  }).then(function(){ _sleepRequestBusy=false; }); }
+function doSleep(){ return requestSleepState(state.machine.state==='sleeping'?'idle':'sleeping',false); }
+function sleepHold(){ return requestSleepState(state.machine.state==='sleeping'?'idle':'sleeping',true); }
+function handleSleepExitReturn(){
+  if(!state.machineSeen||document.hidden||lsGet(SLEEP_EXIT_KEY)==null||_sleepRequestBusy||_fwRunning) return;
+  lsSet(SLEEP_EXIT_KEY,null);
+  var ms=state.machine.state;
+  if(!ms||ms==='idle'||ms==='sleeping') return requestSleepState('idle',false); }
+function bindSleepBtn(){ var b=document.getElementById('btnSleep'); if(!b||b._hold) return;
+  b._hold=true; bindHold(b,doSleep,sleepHold,{duration:800,contextMenuHolds:false}); }
+function setSleepExit(on){ prefs.sleepExit=!!on; savePrefs(); }
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) handleSleepExitReturn(); });
+// The confirmed sleep screen pauses background animation; UI changes send no machine command.
 // H:MM, so it wakes on the minute rather than once a second, the same way
 // the sleep screen’s clock does.
 var _hdrClockT=null;
@@ -8412,7 +8450,7 @@ function pauseSvgAnimations(on){
   var list=document.querySelectorAll('.app svg');
   for(var i=0;i<list.length;i++){ var sv=list[i];
     try{ if(on){ if(sv.pauseAnimations) sv.pauseAnimations(); } else if(sv.unpauseAnimations) sv.unpauseAnimations(); }catch(_){} } }
-// Called on both enter paths (button + machine-reported). Flips the sleep flag,
+// Called after confirmed machine sleep. Flips the sleep flag,
 // shows the lock, and starts the clock. The clock reads H:MM, so it wakes once a
 // minute -- on the minute -- rather than once a second, and each tick also nudges
 // the lock to a new offset, which is the whole burn-in guard.
@@ -8431,7 +8469,9 @@ function beginSleepUI(){ _asleep=true; document.body.classList.add('asleep'); do
   if(_lockClockT) clearTimeout(_lockClockT); _lockShiftI=0; tickLockClock();
   // Dim the panel while asleep (a dark, low-brightness screen resists burn-in and
   // saves power). Remember the level so it can be restored on wake.
-  if(prefs.sleepDim){ if(displayState&&displayState.brightness!=null) _preSleepBrightness=displayState.brightness;
+  if(prefs.sleepDim){ if(_preSleepBrightness==null&&displayState){
+    var level=displayState.requestedBrightness!=null?displayState.requestedBrightness:displayState.brightness;
+    if(level!=null) _preSleepBrightness=level; }
     if(_preSleepBrightness!=null) lsSet('aurora_presleep',_preSleepBrightness);
     api('PUT','/api/v1/display/brightness',{brightness:prefs.sleepBrightness||20}).catch(function(){}); } }
 // Whatever the panel was on before it was dimmed, wherever that was written.
@@ -8457,10 +8497,8 @@ function endSleepUI(){ _asleep=false;
   // Restore pre-sleep brightness.
   restoreBrightness();
   updateMachineUI(); updateWaterUI(); updateScaleUI(); _chartBgKey=null; drawChart(); }
-function enterSleep(){ beginSleepUI();
-  api('PUT','/api/v1/machine/state/sleeping').catch(function(){ toast(t('tSleepFailed'),'err'); }); }
-function wakeFromSleep(){ endSleepUI();
-  if(state.machine.state==='sleeping'&&!_fwRunning) api('PUT','/api/v1/machine/state/idle').catch(function(){ toast(t('tWakeFailed'),'err'); }); }
+function enterSleep(){ return requestSleepState('sleeping',false); }
+function wakeFromSleep(){ if(!_asleep) return; return requestSleepState('idle',false); }
 // Eight offsets, none of them large enough to notice across a minute, all of them
 // far enough apart that no pixel carries the same glyph for long.
 var LT_CELL_CAP=60, LT_TICK=[650,1300];
@@ -8975,7 +9013,7 @@ function connVia(d){ return /^plugin:/.test(d.id||'')?t('connViaPlugin'):''; }
 function connBtn(label,call,off){
   return '<button class="m-btn cn-btn"'+(off?' disabled':'')
     +' onclick="'+call+'"><span>'+escapeHtml(label)+'</span></button>'; }
-function connLocked(){ return !!state.shotRunning||_dosingScanning||!!_connBusy; }
+function connLocked(){ return _brewReconnectBusy||!!state.shotRunning||_dosingScanning||!!_connBusy; }
 // Each role is one quadrant, and each quadrant answers the same two
 // questions in the same order: what is holding this now, and what else is
 // within reach. Only the second list grows, so only the second one scrolls.
@@ -10135,6 +10173,8 @@ function applyPrefsObject(p){
   else if(p.monClose&&typeof p.monClose==='object') prefs.monClose=p.monClose;
   if(typeof p.monAuto==='boolean') prefs.monAuto=p.monAuto?{espresso:true}:{};
   else if(p.monAuto&&typeof p.monAuto==='object') prefs.monAuto=p.monAuto;
+  if(typeof p.sleepExit==='boolean') prefs.sleepExit=p.sleepExit;
+  if(typeof p.brewReconnect==='boolean') prefs.brewReconnect=p.brewReconnect;
   if(typeof p.sleepDim==='boolean') prefs.sleepDim=p.sleepDim;
   if(typeof p.lockPics==='boolean') prefs.lockPics=p.lockPics;
   if(p.lockMotion==='always'||p.lockMotion==='burst'||p.lockMotion==='still') prefs.lockMotion=p.lockMotion;
@@ -10467,7 +10507,7 @@ function kpConfirm(){ var v=parseFloat(KP.str);
   syncRecipe(); pushRecipe(); closeModal(null,'keypadOverlay'); }
 
 // ── Preferences & settings ──────────────────────────────────────────
-var prefs={ hwAppStopOff:false, lockPics:true, lockMotion:'burst', lockOn:10, lockOff:50, autoDye:true, monClose:{}, night:false, nightAuto:false, geminiKey:'', claudeKey:'', openaiKey:'', aiProvider:'gemini', shotRead:'icon', wfKind:'', qrHost:'', lang:'auto', tempUnit:'C', weightUnit:'g', refillKitFull:'auto', monAuto:{espresso:true}, sleepDim:true, sleepBrightness:20,
+var prefs={ sleepExit:true, brewReconnect:true, hwAppStopOff:false, lockPics:true, lockMotion:'burst', lockOn:10, lockOff:50, autoDye:true, monClose:{}, night:false, nightAuto:false, geminiKey:'', claudeKey:'', openaiKey:'', aiProvider:'gemini', shotRead:'icon', wfKind:'', qrHost:'', lang:'auto', tempUnit:'C', weightUnit:'g', refillKitFull:'auto', monAuto:{espresso:true}, sleepDim:true, sleepBrightness:20,
   // Which scale this skin weighs a dose on. The gateway holds it open on request and attaches no meaning to it, so the choice lives here.
   dosingScaleId:'',
   // 'on' | 'off'. guideSrc is not chosen in settings: loading a profile makes
@@ -10895,6 +10935,7 @@ function renderSpContent(){ var box=document.getElementById('spContent'); if(!bo
         h+=row('lockOn','lockOnDesc','<div class="opt-ctrl"><input type="range" class="slider" min="5" max="60" step="1" value="'+on+'" oninput="setLockOn(this.value,true)" onchange="setLockOn(this.value)"><span class="opt-val" id="lockOnVal">'+on+'s</span></div>');
         h+=row('lockOff','lockOffDesc','<div class="opt-ctrl"><input type="range" class="slider" min="10" max="300" step="5" value="'+off+'" oninput="setLockOff(this.value,true)" onchange="setLockOff(this.value)"><span class="opt-val" id="lockOffVal">'+off+'s</span></div>');
       } }
+    if(canExitApp()) h+=row('sleepExit','sleepExitDesc',sw('setSleepExit',prefs.sleepExit!==false,'setSleepExit(this.checked)'));
     h+=row('sleepDim','sleepDimDesc',sw('setSleepDim',!!prefs.sleepDim,'setSleepDim(this.checked)'));
     var sb=prefs.sleepBrightness||20;
     h+=row('sleepBright','sleepBrightDesc','<div class="opt-ctrl"><input type="range" class="slider" min="1" max="60" step="1" value="'+sb+'" oninput="setSleepBright(this.value,true)" onchange="setSleepBright(this.value,false)"><span class="opt-val" id="sbVal">'+sb+'</span></div>');
@@ -10905,6 +10946,7 @@ function renderSpContent(){ var box=document.getElementById('spContent'); if(!bo
   } else if(spCat==='scale'){
     h+='<div class="sp-cat-title">'+t('catScale')+'</div>';
     h+='<div class="set-desc" style="margin-bottom:12px">'+t('scaleDesc')+'</div>';
+    h+=row('brewReconnect','brewReconnectDesc',sw('setBrewReconnect',prefs.brewReconnect!==false,'setBrewReconnect(this.checked)'));
     h+=row('blockNoScale','blockNoScaleDesc',sw('setBlockNoScale',!!gwSettings.blockOnNoScale,'setBlockOnNoScale(this.checked)'));
     var spm=gwSettings.scalePowerMode||'disabled';
     h+=row('scalePower','scalePowerDesc','<select class="set-select" onchange="setScalePowerMode(this.value)">'
@@ -11021,7 +11063,7 @@ function scaleChoice(side,id,label,on,taken,busy,note){
     +'<span class="sc-pick-n">'+escapeHtml(label)+'</span>'
     +(note?('<span class="sc-pick-s">'+escapeHtml(note)+'</span>'):'')+'</button>'; }
 function pickScale(side,id){
-  if(state.shotRunning) return;
+  if(_brewReconnectBusy||state.shotRunning) return;
   if(side==='dosing') return setDosingScale(id);
   return setBrewScale(id); }
 // Changing what a shot is weighed on is not a preference to be forgotten at the
@@ -11036,24 +11078,63 @@ function releaseDosingForBrew(id){
   state.dosingConnected=false; state.dosingWeight=null;
   syncDoseTake(); syncRecipe();
   return releaseDosingScale(id); }
+// Bounded, idle-only discovery for a preferred primary scale powered on later.
+var _brewReconnectBusy=false, _brewRetryAt=0, _brewIdleSince=0;
+function setBrewReconnect(on){ prefs.brewReconnect=!!on; _brewRetryAt=0; savePrefs(); }
+function brewReconnectAllowed(id){
+  return !!id&&prefs.brewReconnect!==false&&gwSettings.preferredScaleId===id&&id!==dosingId()
+    &&!/^plugin:|^usb:/.test(id)&&id!=='usb-hds:any'
+    &&!document.hidden&&!_asleep&&!fwHoldsAwake()&&state.connected
+    &&state.machine.state==='idle'&&!state.scaleConnected&&!state.shotRunning
+    &&!state.steamRunning&&!state.waterRunning&&!state.flushRunning
+    &&!_dosingScanning&&!_connBusy&&!state.deviceBusy&&!connOpen(); }
+function reconnectBrewScale(){
+  var id=(gwSettings||{}).preferredScaleId;
+  if(_brewReconnectBusy) return Promise.resolve();
+  if(!brewReconnectAllowed(id)){ _brewIdleSince=0; return Promise.resolve(); }
+  var now=Date.now();
+  if(!_brewIdleSince){ _brewIdleSince=now; return Promise.resolve(); }
+  if(now-_brewIdleSince<10000||now<_brewRetryAt) return Promise.resolve();
+  _brewReconnectBusy=true; _brewRetryAt=now+30000;
+  // Re-read preferences and connections: another skin may have changed either.
+  return api('GET','/api/v1/settings').then(function(x){
+    if(x) gwSettings=x;
+    if(!brewReconnectAllowed(id)) return null;
+    return api('GET','/api/v1/devices');
+  }).then(function(list){
+    if(!Array.isArray(list)||!brewReconnectAllowed(id)) return null;
+    state.devices=list;
+    if(list.some(function(d){ return d.type==='scale'&&d.connectionRole!=='auxiliary'&&d.state==='connected'; })) return null;
+    return api('GET','/api/v1/devices/scan?connect=false',null,60000);
+  }).then(function(list){
+    if(!Array.isArray(list)||!brewReconnectAllowed(id)) return;
+    state.devices=list;
+    if(list.some(function(d){ return d.type==='scale'&&d.connectionRole!=='auxiliary'&&d.state==='connected'; })) return;
+    var target=list.filter(function(d){ return d.id===id&&d.type==='scale'; })[0];
+    if(!target||target.connectionRole==='auxiliary'||target.state==='connecting') return;
+    return api('PUT','/api/v1/devices/connect',{deviceId:id,connectionRole:'primary'},20000);
+  }).catch(function(){}).then(function(){
+    _brewReconnectBusy=false; _brewRetryAt=Date.now()+30000; loadDevices(); }); }
 function setBrewScale(id){
+  if(_brewReconnectBusy||_connBusy) return;
   var prev=brewScaleId();
-  if(id===prev) return;
+  if(id===prev&&(!id||state.scaleConnected)) return;
   var pre=Promise.resolve();
   if(id&&id===dosingId()){
     var dd=deviceById(id);
     if(!confirm(t('brewTakeOver').replace('{n}',(dd&&dd.name)||id))) return;
     pre=releaseDosingForBrew(id); }
+  _connBusy='brew:'+id;
   var done=pre.then(function(){
     return prev?api('PUT','/api/v1/devices/disconnect',{deviceId:prev}).catch(function(){}):null; });
-  done.then(function(){
-      return api('POST','/api/v1/settings',{preferredScaleId:id||null}).catch(function(){}); })
+  return done.then(function(){
+      return api('POST','/api/v1/settings',{preferredScaleId:id||null}).then(function(){ gwSettings.preferredScaleId=id||null; }); })
     .then(function(){
       if(!id) return null;
       return api('PUT','/api/v1/devices/connect',{deviceId:id,connectionRole:'primary'},20000); })
     .then(function(){ toast(t(id?'scaleBrewSet':'scaleBrewCleared'),'ok'); },
       function(e){ toast(t('scaleBrewFailed')+' '+apiErrorText(e),'err'); })
-    .then(function(){ loadDevicesForDosing(); }); }
+    .then(function(){ _connBusy=''; loadDevicesForDosing(); }); }
 function dosingBlockHtml(){
   if(!dosingSupported()) return '';
   return '<div class="sc-cols">'
@@ -11103,6 +11184,7 @@ function autoPickDosing(){
   _dosingHoldAt=0; _dosingWaitAt=0;
   toast(t('dosingPicked').replace('{n}',c[0].name||c[0].id),'ok'); }
 function maybeAutoScanDosing(){
+  if(_brewReconnectBusy||_asleep) return;
   if(!dosingSupported()||document.hidden) return;
   if(state.shotRunning||_dosingScanning) return;
   if(brewScalePending()) return;
@@ -11123,7 +11205,7 @@ function maybeAutoScanDosing(){
       if(now&&deviceById(now)) _dosingMiss=0; else _dosingMiss++;
       renderDosingRow(); syncConnDosing(); syncDosing(); }); }
 function dosingScan(){
-  if(_dosingScanning||state.shotRunning) return;
+  if(_brewReconnectBusy||_dosingScanning||state.shotRunning) return;
   _dosingMiss=0;
   _dosingScanning=true; renderDosingRow(); syncConnDosing();
   var before=scaleDevices().length;
@@ -24076,6 +24158,8 @@ document.addEventListener('DOMContentLoaded', function(){
   skinStableCheck();
   bindDoseGestures(); thermoInit();
   fitStage(); tickHdrClock(); loadFavs(); loadAiLangs(); loadPrefs(); syncWorkflowBtn(); applyFx(); loadPresets(); loadGrinderBrands(); loadGrinderSpeeds(); loadGrinderFeeds(); loadGrinderBurrs(); loadBaskets(); loadRoastMachines(); hydrateFromStore(); initWebSockets();   applyActionMode(); applyCam(); syncRecipe(); updateShotBtn(); drawChart();
+  handleSleepExitReturn();
+  setInterval(reconnectBrewScale,5000);
   loadMachineSettings(); loadMachineInfo(); loadDevices();
   loadBattery(); setInterval(loadBattery,60000);
   api('GET','/api/v1/grinders').then(function(g){ grinders=g||[]; updateGrindRow(); ensurePluginGrinders(); }).catch(function(){});
