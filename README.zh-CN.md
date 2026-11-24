@@ -8,7 +8,7 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 
 ## 安装与更新
 
-本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.248.0（79e8676）**，中文版本为 **1.248.0-zh.1**，包含 1,524 个内置中文词条与出液量步进修复。
+本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.248.0（79e8676）**，中文版本为 **1.248.0-zh.2**，包含 1,524 个内置中文词条与出液量步进修复。
 
 在 Decaid 主页的皮肤管理中选择 **Install from GitHub Branch**：
 
@@ -27,6 +27,7 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 - 同步热水按秤停止、重量突变过滤、热水记录，以及默认关闭的“忽略机器水量计数”。该选项开启后，若皮肤或秤掉线，热水可能持续到时间上限，请按界面说明使用。
 - 新增 20 个中文词条、更新 2 个说明、删除 4 个弃用词条，现有 1,524 个内置中文词条。
 - 保留 0.5 g 出液量步进修复：74.6 g 点加号到 75.0 g，75.1 g 点减号到 75.0 g；直接输入仍可保留一位小数。
+- 将配方出液量上限从 80 g 提高到 150 g；主界面、工作流、键盘、比例计算、AI 建议和曲线编辑器保持一致，适合超萃、甜甜萃等长萃取曲线。
 - 保留确认休眠后才显示屏保、3 秒唤醒保护、0.8 秒长按与可关闭的长按离开应用，以及返回时安全唤醒。
 - 保留 Bookoo Mini 首选萃取秤重连：每 5 秒检查条件，首次空闲等待约 10 秒，每次尝试结束后至少等待 30 秒。需先在设备列表选为萃取秤；休眠、萃取、手动设备操作或已有萃取秤连接时不启动扫描。
 - 保留自己的更新来源及既有用户数据。验证结果见 [维护清单](CUSTOMIZATIONS.zh-CN.md)。Android + Bookoo Mini 仍待实机验证；不宣称解决 Decaid 整应用重启。

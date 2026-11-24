@@ -9928,10 +9928,11 @@ function syncProfileStop(){
     .replace('{a}',(Math.round(c.at*10)/10).toFixed(1))
     .replace('{n}',String(Math.round(c.at)));
   el.classList.toggle('short',c.kind==='clock'||c.at<settings.doseOut-0.2); }
+var YIELD_MIN=10, YIELD_MAX=150;
 function setDoseIn(v){
   var r=recipeRatio()||null;
   settings.doseIn=Math.max(5,Math.min(30,parseFloat((+v).toFixed(1))));
-  if(r){ settings.doseOut=Math.max(10,Math.min(80,
+  if(r){ settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,
     parseFloat((settings.doseIn*r).toFixed(1)))); } }
 function adjust(key,delta){
   if(key==='doseIn'){ setDoseIn(settings.doseIn+delta); syncRecipe(); pushRecipe(); return; }
@@ -9943,12 +9944,12 @@ function adjust(key,delta){
     var step=Math.abs(delta), mark=settings[key]/step;
     // Ignore floating-point noise at an existing mark before advancing it.
     next=(delta>0?Math.floor(mark+1e-9)+1:Math.ceil(mark-1e-9)-1)*step; }
-  settings[key]=parseFloat(next.toFixed(1)); var c={doseIn:[5,30],doseOut:[10,80]}[key]; if(c) settings[key]=Math.max(c[0],Math.min(c[1],settings[key])); syncRecipe(); pushRecipe(); }
+  settings[key]=parseFloat(next.toFixed(1)); var c={doseIn:[5,30],doseOut:[YIELD_MIN,YIELD_MAX]}[key]; if(c) settings[key]=Math.max(c[0],Math.min(c[1],settings[key])); syncRecipe(); pushRecipe(); }
 // Adjust the ratio directly -> recompute yield from current dose.
 // Stepping the ratio lands on a ratio worth stepping to: a yield set by hand
 // leaves 2.01, and one press of + should give 2.1, not 2.11.
 function adjustRatio(delta){ var r=recipeRatio()||2; r=Math.max(1,Math.min(4,parseFloat((r+delta).toFixed(1))));
-  settings.doseOut=parseFloat((settings.doseIn*r).toFixed(1)); settings.doseOut=Math.max(10,Math.min(80,settings.doseOut)); syncRecipe(); pushRecipe(); }
+  settings.doseOut=parseFloat((settings.doseIn*r).toFixed(1)); settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,settings.doseOut)); syncRecipe(); pushRecipe(); }
 // A DE1 profile has no single brew temperature: every step carries its own.
 // The card shows the first step's, and a change shifts them all by the same
 // amount, so a profile that ramps its temperature keeps its ramp. What is
@@ -10637,7 +10638,7 @@ function applyBurrLookup(o,r,tally){
 
 // ── Numeric keypad (recipe editing) ─────────────────────────────────
 var KP={ field:null, str:'', unit:'g', fresh:true };
-var KP_CFG={ doseIn:{title:'kpDose',unit:'g',min:5,max:30}, doseOut:{title:'kpYield',unit:'g',min:10,max:80}, ratio:{title:'kpRatio',unit:'',min:1,max:4}, brewTemp:{title:'kpTemp',unit:'',min:TH_ABS_MIN,max:TH_ABS_MAX} };
+var KP_CFG={ doseIn:{title:'kpDose',unit:'g',min:5,max:30}, doseOut:{title:'kpYield',unit:'g',min:YIELD_MIN,max:YIELD_MAX}, ratio:{title:'kpRatio',unit:'',min:1,max:4}, brewTemp:{title:'kpTemp',unit:'',min:TH_ABS_MIN,max:TH_ABS_MAX} };
 function openKeypad(field){ var c=KP_CFG[field]; if(!c) return;
   if(field==='brewTemp'&&brewTempC()==null){ toast(t('noProfile'),'err'); return; }
   KP.field=field; KP.unit=(field==='brewTemp')?tempUnitLabel():c.unit; KP.fresh=true;
@@ -10671,7 +10672,7 @@ function kpConfirm(){ var v=parseFloat(KP.str);
   if(KP.field==='brewTemp'){ setBrewTempC(unconvTemp(v)); closeModal(null,'keypadOverlay'); return; }
   var c=KP_CFG[KP.field];
   v=Math.max(c.min,Math.min(c.max,v));
-  if(KP.field==='ratio'){ settings.doseOut=parseFloat((settings.doseIn*v).toFixed(1)); settings.doseOut=Math.max(10,Math.min(80,settings.doseOut)); }
+  if(KP.field==='ratio'){ settings.doseOut=parseFloat((settings.doseIn*v).toFixed(1)); settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,settings.doseOut)); }
   else if(KP.field==='doseIn'){ setDoseIn(v); }
   else { settings[KP.field]=parseFloat(v.toFixed(1)); }
   syncRecipe(); pushRecipe(); closeModal(null,'keypadOverlay'); }
@@ -14393,14 +14394,14 @@ function applyAiProfile(res){
       volume:aipNum(r.volume,0,150,0),
       sensor:(String(r.sensor)==='coffee'?'coffee':'water') };
     if(isP) st.pressure=aipNum(r.pressure,0,12,6); else st.flow=aipNum(r.flow,0,8,2);
-    var w=aipNum(r.weight,0,80,0); st.weight=w>0?w:null;
+    var w=aipNum(r.weight,0,YIELD_MAX,0); st.weight=w>0?w:null;
     var x=r.exit;
     if(x&&(x.type==='pressure'||x.type==='flow')&&(x.condition==='over'||x.condition==='under'))
       st.exit={ type:x.type, condition:x.condition, value:aipNum(x.value,0,(x.type==='pressure'?12:8),2) };
     return st; });
   editing.profile.steps=steps;
   if(res.title) editing.profile.title=String(res.title).slice(0,80);
-  var tw=aipNum(res.targetWeight,0,120,0); if(tw>0) editing.profile.target_weight=tw;
+  var tw=aipNum(res.targetWeight,0,YIELD_MAX,0); if(tw>0) editing.profile.target_weight=tw;
   var why=String(res.why||'').trim();
   if(why) editing.profile.notes=why;
   aipResult={ why:why, time:String(res.targetTime||'').trim(),
@@ -14469,7 +14470,7 @@ function profFieldsHtml(pr){
     +fld(t('bevType'),'<select id="epBev">'+BEV_KINDS.map(function(k){
         return '<option value="'+k[0]+'"'+(bev===k[0]?' selected':'')+'>'+escapeHtml(t(k[1]))+'</option>'; }).join('')+'</select>')
     +fld(t('authorLabel'),'<input id="epAuthor" maxlength="40" value="'+escapeAttr(pr.author||'')+'">')
-    +fld(t('stopWeight'),'<input id="epTW" type="number" min="0" max="200" step="0.1" placeholder="'+escapeAttr(t('noLimit'))+'" value="'+escapeAttr(pfNumV(pr.target_weight))+'">')
+    +fld(t('stopWeight'),'<input id="epTW" type="number" min="0" max="150" step="0.1" placeholder="'+escapeAttr(t('noLimit'))+'" value="'+escapeAttr(pfNumV(pr.target_weight))+'">')
     +'<div class="ep-pf ep-calf" id="epAfc"'+(_afc?'':' hidden')+'>'+afcLineHtml(_afc,pr.title)+'</div>'
     +((editing&&!editing.isNew)?'<div class="ep-pf ep-calf" id="epStop">'+stopRowHtml(editing)+'</div>':'')
     +'<button type="button" class="ep-advtog'+(epAdvOpen?' on':'')+'" onclick="epAdvToggle()">'
@@ -22003,7 +22004,7 @@ function aiFbListHtml(){
     +escapeHtml(t('aiMemoryClear'))+'</button></div>'; }
 function renderAiFbBox(){ var box=document.getElementById('aiFbBox'); if(box) box.innerHTML=aiFbListHtml(); }
 var AI_FIELDS={grind:1,dose:1,yield:1,ratio:1,temp:1};
-var AI_LIM={dose:[5,30],yield:[10,80],ratio:[1,4],temp:[TH_ABS_MIN,TH_ABS_MAX]};
+var AI_LIM={dose:[5,30],yield:[YIELD_MIN,YIELD_MAX],ratio:[1,4],temp:[TH_ABS_MIN,TH_ABS_MAX]};
 // Whatever the model put in "apply" is a claim, not an instruction: it is kept
 // only if it names one of the five fields and a value the card could hold.
 function aiApplyOf(x){
@@ -22127,9 +22128,9 @@ function aiApplyOne(a){
     if(brewTempC()==null){ toast(t('aiApplyNoProfile'),'err'); return false; }
     setBrewTempC(+a.to); return true; }
   if(a.field==='dose'){ setDoseIn(+a.to); }
-  else if(a.field==='yield'){ settings.doseOut=Math.max(10,Math.min(80,parseFloat((+a.to).toFixed(1)))); }
+  else if(a.field==='yield'){ settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,parseFloat((+a.to).toFixed(1)))); }
   else if(a.field==='ratio'){
-    settings.doseOut=Math.max(10,Math.min(80,parseFloat((settings.doseIn*(+a.to)).toFixed(1)))); }
+    settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,parseFloat((settings.doseIn*(+a.to)).toFixed(1)))); }
   else return false;
   syncRecipe(); pushRecipe(); return true; }
 function applyAiSug(i){
@@ -23092,10 +23093,10 @@ function wfKp(field){
   openKeypadFor({ value:cur, dp:(field==='ratio'?2:1), min:c.min, max:c.max,
     title:t(field==='ratio'?'kpRatio':field==='doseIn'?'kpDose':'kpYield'),
     onOk:function(v){
-      if(field==='ratio'){ settings.doseOut=Math.max(10,Math.min(80,
+      if(field==='ratio'){ settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,
         parseFloat((settings.doseIn*v).toFixed(1)))); }
       else if(field==='doseIn') setDoseIn(v);
-      else settings.doseOut=Math.max(10,Math.min(80,parseFloat(v.toFixed(1))));
+      else settings.doseOut=Math.max(YIELD_MIN,Math.min(YIELD_MAX,parseFloat(v.toFixed(1))));
       syncRecipe(); pushRecipe(); renderWf(); } }); }
 function wfWaterHtml(){
   return '<div class="wf-rows">'
