@@ -318,8 +318,8 @@ test('choosing several stays choosing, and does not load', function (T) {
   epSetWide(false); shut();
 });
 
-test('changing the profile leaves the recipe card as it is', function (T) {
-  var real = api, was = { i: settings.doseIn, o: settings.doseOut }, shots = 0, puts = [];
+test('each profile restores its own default or remembered yield', function (T) {
+  var real = api, was = { i: settings.doseIn, o: settings.doseOut, py: prefs.profileYields }, shots = 0, puts = [];
   api = function (m, path, body) {
     if (m === 'GET' && path.indexOf('/api/v1/shots') === 0) {
       shots++;
@@ -329,17 +329,26 @@ test('changing the profile leaves the recipe card as it is', function (T) {
     if (m === 'PUT') puts.push(body);
     return Promise.resolve({});
   };
-  settings.doseIn = 18; settings.doseOut = 36;
+  settings.doseIn = 18; settings.doseOut = 36; prefs.profileYields = {};
   var prev = curProfileObj;
-  selectProfile({ id: 'ratio-test', profile: { title: 'Ratio Test', steps: [] } });
+  var first = { id: 'ratio-test', profile: { title: 'Ratio Test', target_weight: 42.5, steps: [] } };
+  var second = { id: 'long-test', profile: { title: 'Long Test', target_weight: 100, steps: [] } };
+  selectProfile(first);
   return new Promise(function (r) { setTimeout(r, 80); }).then(function () {
-    api = real;
     T.eq(shots, 0, 'no shot is looked up');
     T.eq(settings.doseIn, 18, 'the dose stays');
-    T.eq(settings.doseOut, 36, 'the yield stays');
-    T.ok(!puts.some(function (b) { return b && b.context; }), 'no recipe is written');
-    curProfileObj = prev; settings.doseIn = was.i; settings.doseOut = was.o; syncRecipe();
-  }, function (e) { api = real; curProfileObj = prev; settings.doseIn = was.i; settings.doseOut = was.o; throw e; });
+    T.eq(settings.doseOut, 42.5, 'a new profile starts at its own target');
+    T.eq(puts[0].context.targetYield, 42.5, 'the selected target is written with the profile');
+    T.eq(puts[0].profile.target_weight, 42.5, 'the workflow profile agrees with the card');
+    settings.doseOut = 47.3; rememberProfileYield();
+    selectProfile(second);
+    T.eq(settings.doseOut, 100, 'another profile keeps its own default');
+    selectProfile(first);
+    T.eq(settings.doseOut, 47.3, 'returning restores that profile\'s last target');
+    T.eq(first.profile.target_weight, 42.5, 'the saved profile was not rewritten');
+    api = real; curProfileObj = prev; settings.doseIn = was.i; settings.doseOut = was.o;
+    prefs.profileYields = was.py; syncRecipe();
+  }, function (e) { api = real; curProfileObj = prev; settings.doseIn = was.i; settings.doseOut = was.o; prefs.profileYields = was.py; throw e; });
 });
 
 test('using a profile from the editor asks nothing about its last shot', function (T) {

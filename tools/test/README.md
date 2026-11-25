@@ -5,6 +5,7 @@ Chinese fork checks without a gateway:
 ```bash
 node tools/test/i18n.cjs
 node tools/test/yield-step.cjs
+node tools/test/profile-yield.cjs
 node tools/test/sleep-scale.cjs
 ```
 

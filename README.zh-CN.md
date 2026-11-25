@@ -8,7 +8,7 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 
 ## 安装与更新
 
-本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.248.0（79e8676）**，中文版本为 **1.248.0-zh.2**，包含 1,524 个内置中文词条与出液量步进修复。
+本分支由 `ethan-yangcheng` 独立维护，基于 [SongPaul/liquid-aqua-skin](https://github.com/SongPaul/liquid-aqua-skin)。当前同步上游 **v1.248.0（79e8676）**，中文版本为 **1.248.0-zh.3**，包含 1,524 个内置中文词条与出液量改进。
 
 在 Decaid 主页的皮肤管理中选择 **Install from GitHub Branch**：
 
@@ -22,12 +22,13 @@ Liquid Aqua 是 [Decaid](https://github.com/decentespresso/decaid) 的 WebUI 皮
 ## 本次更新
 
 - 同步原作者 v1.248.0：修复手动粉量、出液量和研磨度被旧数据覆盖，保存失败自动重试。
-- 切换曲线保留当前配方；切换豆子或磨豆机不再自动覆盖研磨度，上次研磨度改为点选应用。
+- 切换豆子或磨豆机不再自动覆盖研磨度，上次研磨度改为点选应用；曲线出液量按下述独立记忆规则恢复。
 - 改进设备窗口与连接顺序，取消上游原有的称豆秤自动扫描；保留本分支可关闭的首选萃取秤自动重连。
 - 同步热水按秤停止、重量突变过滤、热水记录，以及默认关闭的“忽略机器水量计数”。该选项开启后，若皮肤或秤掉线，热水可能持续到时间上限，请按界面说明使用。
 - 新增 20 个中文词条、更新 2 个说明、删除 4 个弃用词条，现有 1,524 个内置中文词条。
 - 保留 0.5 g 出液量步进修复：74.6 g 点加号到 75.0 g，75.1 g 点减号到 75.0 g；直接输入仍可保留一位小数。
 - 将配方出液量上限从 80 g 提高到 150 g；主界面、工作流、键盘、比例计算、AI 建议和曲线编辑器保持一致，适合超萃、甜甜萃等长萃取曲线。
+- 每条曲线独立记住最后手动设定的出液量：初次选择使用曲线自身的默认值；切走再切回恢复该曲线的上次设置，不会改写曲线文件，也不会串到另一条曲线。
 - 保留确认休眠后才显示屏保、3 秒唤醒保护、0.8 秒长按与可关闭的长按离开应用，以及返回时安全唤醒。
 - 保留 Bookoo Mini 首选萃取秤重连：每 5 秒检查条件，首次空闲等待约 10 秒，每次尝试结束后至少等待 30 秒。需先在设备列表选为萃取秤；休眠、萃取、手动设备操作或已有萃取秤连接时不启动扫描。
 - 保留自己的更新来源及既有用户数据。验证结果见 [维护清单](CUSTOMIZATIONS.zh-CN.md)。Android + Bookoo Mini 仍待实机验证；不宣称解决 Decaid 整应用重启。
@@ -71,6 +72,7 @@ python3 -m http.server 8081
 ```bash
 node tools/test/i18n.cjs
 node tools/test/yield-step.cjs
+node tools/test/profile-yield.cjs
 node tools/test/sleep-scale.cjs
 ```
 

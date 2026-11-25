@@ -8,6 +8,9 @@ const html = fs.readFileSync(path.join(__dirname, '../../index.html'), 'utf8');
 let rendered = 0, pushed = [];
 const ctx = {
   settings: { doseIn: 18, doseOut: 36 },
+  prefs: { profileYields: {} },
+  curProfileObj: null,
+  savePrefs() {},
   recipeRatio() { return ctx.settings.doseOut / ctx.settings.doseIn; },
   syncRecipe() { rendered++; },
   pushRecipe() { pushed.push({ ...ctx.settings }); },
@@ -18,7 +21,7 @@ const ctx = {
   KP_CFG: { doseOut: { min: 10, max: 150 } }
 };
 vm.createContext(ctx);
-vm.runInContext(html.slice(html.indexOf('function setDoseIn(v){'), html.indexOf('// A DE1 profile has no single brew temperature:')), ctx);
+vm.runInContext(html.slice(html.indexOf('function profileYieldKey(p){'), html.indexOf('// A DE1 profile has no single brew temperature:')), ctx);
 vm.runInContext(html.slice(html.indexOf('function kpConfirm(){'), html.indexOf('// ── Preferences & settings')), ctx);
 const cases = [
   [74.6, 0.5, 75], [75.1, -0.5, 75], [74.6, -0.5, 74.5],
@@ -67,6 +70,16 @@ ctx.settings = { doseIn: 18, doseOut: 36 };
 ctx.adjust('doseIn', 0.1);
 assert.equal(ctx.settings.doseIn, 18.1);
 assert.equal(ctx.settings.doseOut, 36.2);
+// A changed target belongs to the active profile, not to whichever profile is
+// selected next. The profile file is deliberately not part of this write.
+ctx.curProfileObj = { id: 'sweet', profile: { title: 'Sweet', target_weight: 40 } };
+ctx.settings.doseOut = 47.3;
+ctx.rememberProfileYield();
+assert.equal(ctx.prefs.profileYields.sweet, 47.3);
+assert.equal(ctx.selectedProfileYield(ctx.curProfileObj), 47.3);
+ctx.curProfileObj = { id: 'long', profile: { title: 'Long', target_weight: 100 } };
+assert.equal(ctx.selectedProfileYield(ctx.curProfileObj), 100);
+ctx.curProfileObj = null;
 // Both main screen and workflow continue to use the tested shared function.
 assert.ok(html.includes('onclick="adjust(\'doseOut\',0.5)"'));
 assert.ok(html.includes("'adjust(\\'doseOut\\',0.5);renderWf()'"));

@@ -1,6 +1,6 @@
 # 简体中文分支定制与上游同步记录
 
-最后核对：2026-11-24。本文是持续维护清单，不是一次性的更新日志。后续合入原作者版本时，逐项验证下面的行为；可以采用上游的等效实现，不必保留旧函数形式。
+最后核对：2026-11-25。本文是持续维护清单，不是一次性的更新日志。后续合入原作者版本时，逐项验证下面的行为；可以采用上游的等效实现，不必保留旧函数形式。
 
 ## 维护来源与当前基线
 
@@ -10,7 +10,7 @@
 | 自己的仓库 | `ethan-yangcheng/liquid-aqua-skin`，本地 remote：`origin` |
 | 长期维护分支 | `feat/simplified-chinese` |
 | 已合入上游基线 | v1.248.0，`79e8676` |
-| 当前定制版本 | `1.248.0-zh.2`（150 g 出液量上限） |
+| 当前定制版本 | `1.248.0-zh.3`（曲线独立出液量记忆） |
 | 上次同步与步进修复 | `e383b5c` |
 | 安装方式 | GitHub Branch，自己的仓库 + `feat/simplified-chinese` |
 
@@ -41,10 +41,11 @@
 - 已在刻度上的值继续按 0.5 g 增减，例如 `75.0 → 75.5`。出液量范围为 10–150 g，适合超萃、甜甜萃等长萃取曲线。
 - 直接键盘输入仍保留一位小数；粉量与比例计算不强制套用这个吸附规则。
 - 主界面与工作流使用相同逻辑，修改后的目标需要正确发送给机器。
+- 每条曲线第一次载入使用其 `target_weight` 默认出液量；在主界面、工作流、键盘、比例或 AI 建议中改过后，按曲线 ID 独立记住最后的出液量。切回该曲线恢复记忆值，其他曲线不受影响；此记忆存入皮肤偏好，不改写曲线文件。
 
-代码入口：`adjust`、`setDoseIn`、`kpConfirm`、`pushRecipe` 与 `brewProfileForMachine`。
+代码入口：`profileYieldKey`、`selectedProfileYield`、`rememberProfileYield`、`selectProfile`、`adjust`、`setDoseIn`、`kpConfirm`、`pushRecipe` 与 `brewProfileForMachine`。
 
-验证：`node tools/test/yield-step.cjs`。如果上游调整可用范围，更新对应边界测试，但保留按方向对齐刻度的要求。上游“防止旧数据覆盖输入”的修复与本项不同，两者都应保留。
+验证：`node tools/test/yield-step.cjs` 与浏览器 `profiles` 套件。如果上游调整可用范围，更新对应边界测试，但保留按方向对齐刻度和曲线独立记忆的要求。上游“防止旧数据覆盖输入”的修复与本项不同，两者都应保留。
 
 ### C03：休眠、唤醒控制对齐 Streamline
 
@@ -110,6 +111,7 @@
 ```bash
 node tools/test/i18n.cjs
 node tools/test/yield-step.cjs
+node tools/test/profile-yield.cjs
 node tools/test/sleep-scale.cjs
 git diff --check
 ```
@@ -126,6 +128,9 @@ git diff --check
 
 | 2026-11-24 | `1.248.0-zh.1` / 上游 `79e8676` | 从 v1.243.0 同步至 v1.248.0；C01–C05 均保留；新增 20、更新 2、删除 4 个中文词条；三组离线测试通过，Tabbit 模拟网关浏览器测试 9 组 151/151 通过，硬件待验证 |
 | 2026-11-24 | `1.248.0-zh.2` | 出液量上限由 80 g 提高至 150 g；主界面、工作流、键盘、比例、AI 与曲线编辑器统一；三组离线测试通过 |
+| 2026-11-25 | `1.248.0-zh.3` | 曲线首次选择恢复自身默认出液量；手动调整按曲线 ID 独立保存并在切回时恢复，不改写曲线文件；四组离线测试通过（含默认值、独立记忆、重载持久化、请求目标一致性、旧响应保护和失败重试）。profiles 浏览器断言同步更新，本次未运行浏览器或 Android 实测 |
+
+历史核对：上游 v1.243 的 `applyProfileRecipe` 从最近 50 杯中按曲线名查找最后一杯并恢复粉量和比例；上游 v1.245（`90df385`）删除该恢复行为。本次采用曲线 ID 偏好记录，使尚未萃取的手动调整也可恢复，并保留当前粉量。
 
 
 本次浏览器验证：recipesync 7/7、water 34/34、scales 21/21、connpool 4/4、devices 20/20、doser 25/25、profiles 26/26、beans3 13/13、yield 1/1。使用 Tabbit，8080 网关请求拦截；曲线与豆子相关测试提供虚构测试数据，所有写操作由测试框架拦截。初次空数据环境下 profiles/doser 缺少前置数据，补充测试数据后全部通过，没有删减断言。没有连接真实咖啡机。
